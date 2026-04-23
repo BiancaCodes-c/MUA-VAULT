@@ -1,0 +1,8 @@
+### Health
+GET http://localhost:4000/api/health
+
+### Industry Dashboard
+GET http://localhost:4000/api/industry/dashboard
+
+### Production Uploads
+GET http://localhost:4000/api/industry/productions/1/uploads

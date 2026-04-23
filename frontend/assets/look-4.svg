@@ -1,0 +1,23 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1280" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE9F1"/>
+      <stop offset="0.55" stop-color="#F9CADB"/>
+      <stop offset="1" stop-color="#EB9FB8"/>
+    </linearGradient>
+    <linearGradient id="berry" x1="530" y1="428" x2="745" y2="428" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7D2749"/>
+      <stop offset="1" stop-color="#A93667"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg4)"/>
+  <circle cx="220" cy="170" r="140" fill="#FFBCD1" fill-opacity="0.45"/>
+  <circle cx="1080" cy="545" r="195" fill="#CE5A86" fill-opacity="0.32"/>
+  <ellipse cx="640" cy="380" rx="214" ry="248" fill="#F0C2AA"/>
+  <path d="M550 322C582 292 620 284 640 307" stroke="#5B2A42" stroke-width="10" stroke-linecap="round"/>
+  <path d="M640 307C660 284 698 292 730 322" stroke="#5B2A42" stroke-width="10" stroke-linecap="round"/>
+  <ellipse cx="585" cy="355" rx="30" ry="12" fill="#341726"/>
+  <ellipse cx="695" cy="355" rx="30" ry="12" fill="#341726"/>
+  <path d="M538 418C588 452 692 452 742 418" stroke="url(#berry)" stroke-width="16" stroke-linecap="round"/>
+  <path d="M620 455C634 465 646 465 660 455" stroke="#8B3557" stroke-width="8" stroke-linecap="round"/>
+</svg>

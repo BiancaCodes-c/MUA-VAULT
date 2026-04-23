@@ -1,0 +1,22 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1280" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF7EB"/>
+      <stop offset="0.6" stop-color="#FFECCF"/>
+      <stop offset="1" stop-color="#F9DFAF"/>
+    </linearGradient>
+    <linearGradient id="halo" x1="640" y1="80" x2="640" y2="660" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE49D" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#FFD590" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg3)"/>
+  <circle cx="640" cy="380" r="280" fill="url(#halo)"/>
+  <ellipse cx="640" cy="390" rx="212" ry="245" fill="#F6D2B8"/>
+  <path d="M550 325C580 298 615 290 640 312" stroke="#7C5A52" stroke-width="9" stroke-linecap="round"/>
+  <path d="M640 312C665 290 700 298 730 325" stroke="#7C5A52" stroke-width="9" stroke-linecap="round"/>
+  <ellipse cx="585" cy="360" rx="28" ry="12" fill="#472B2C"/>
+  <ellipse cx="695" cy="360" rx="28" ry="12" fill="#472B2C"/>
+  <path d="M560 420C610 446 670 446 720 420" stroke="#D68F84" stroke-width="12" stroke-linecap="round"/>
+  <path d="M615 455C632 466 648 466 665 455" stroke="#B8665A" stroke-width="8" stroke-linecap="round"/>
+</svg>
