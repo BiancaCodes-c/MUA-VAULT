@@ -1,0 +1,155 @@
+erDiagram
+    USERS ||--o{ CLIENTS : has
+    CLIENTS ||--o{ CLIENT_ALLERGIES : has
+    CLIENTS ||--o{ APPOINTMENTS : books
+    MAKEUP_LOOKS ||--o{ APPOINTMENTS : associated_with
+    MAKEUP_LOOKS ||--o{ LOOK_PRODUCTS : includes
+    PRODUCTS ||--o{ LOOK_PRODUCTS : used_for
+    APPOINTMENTS ||--o{ APPOINTMENT_PRODUCTS : has
+    PRODUCTS ||--o{ APPOINTMENT_PRODUCTS : used_in
+    CLIENTS ||--o{ CLIENT_HISTORY : creates
+    APPOINTMENTS ||--o{ CLIENT_HISTORY : records
+    MAKEUP_LOOKS ||--o{ CLIENT_HISTORY : associated_with
+    USERS ||--o{ MAKEUP_LOOKS : created_by
+    CLIENTS ||--o{ FOUNDATION_SHADES : prefers
+    CLIENTS ||--o{ EYESHADOW_PREFERENCES : has
+    CLIENTS ||--o{ LIP_PREFERENCES : has
+    APPOINTMENTS ||--o{ BEFORE_AFTER_PHOTOS : contains
+    PRODUCTS ||--o{ LOOK_PRODUCTS : categorized_as
+
+    USERS {
+        int id PK
+        string name
+        string email UK
+        string password_hash
+        string role
+        string created_at
+    }
+
+    CLIENTS {
+        int id PK
+        string full_name
+        string phone
+        string email
+        string instagram_handle
+        string skin_tone
+        string undertone
+        string skin_type
+        string allergies
+        string sensitivity_notes
+        string preferred_brands
+        string notes
+        string photo_url
+        string created_at
+        string updated_at
+    }
+
+    CLIENT_ALLERGIES {
+        int id PK
+        int client_id FK
+        string allergy_name
+        string reaction_notes
+        string severity
+    }
+
+    APPOINTMENTS {
+        int id PK
+        int client_id FK
+        int look_id FK
+        string appointment_date
+        string start_time
+        string end_time
+        string event_type
+        string location
+        string status
+        decimal price
+        boolean deposit_paid
+        decimal deposit_amount
+        string notes
+        string created_at
+    }
+
+    MAKEUP_LOOKS {
+        int id PK
+        string look_name
+        string category
+        string description
+        string skin_tone_match
+        string difficulty_level
+        string image_url
+        int created_by FK
+        string created_at
+    }
+
+    PRODUCTS {
+        int id PK
+        string name
+        string brand
+        string category
+        string shade
+        string finish
+        string suitable_skin_type
+        string expiration_date
+        string notes
+        string created_at
+    }
+
+    LOOK_PRODUCTS {
+        int id PK
+        int look_id FK
+        int product_id FK
+        string usage_notes
+    }
+
+    APPOINTMENT_PRODUCTS {
+        int id PK
+        int appointment_id FK
+        int product_id FK
+        string quantity_used
+    }
+
+    CLIENT_HISTORY {
+        int id PK
+        int client_id FK
+        int appointment_id FK
+        int look_id FK
+        string date
+        string notes
+        string client_feedback
+        boolean would_recommend
+    }
+
+    FOUNDATION_SHADES {
+        int id PK
+        int client_id FK
+        string brand
+        string shade_name
+        string shade_code
+        string undertone
+        string notes
+    }
+
+    EYESHADOW_PREFERENCES {
+        int id PK
+        int client_id FK
+        string finish_preference
+        string color_preference
+        string notes
+    }
+
+    LIP_PREFERENCES {
+        int id PK
+        int client_id FK
+        string lipstick_finish
+        string lip_color_preference
+        boolean lipgloss_preference
+        string notes
+    }
+
+    BEFORE_AFTER_PHOTOS {
+        int id PK
+        int appointment_id FK
+        string image_type
+        string image_url
+        string notes
+    }
