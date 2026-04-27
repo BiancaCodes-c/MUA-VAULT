@@ -8,6 +8,31 @@ from src.config.db import get_db
 router = APIRouter()
 
 
+@router.get("/")
+def list_foundation_shades():
+        db = get_db()
+        rows = db.execute(
+                """
+                SELECT
+                    fs.id,
+                    fs.client_id,
+            COALESCE(NULLIF(c.full_name, ''), 'Unknown Client') AS client_name,
+            COALESCE(NULLIF(fs.brand, ''), 'Unknown Brand') AS brand,
+            COALESCE(NULLIF(fs.shade_name, ''), 'Unknown Shade') AS shade_name,
+            COALESCE(NULLIF(fs.shade_code, ''), 'N/A') AS shade_code,
+            COALESCE(NULLIF(fs.undertone, ''), 'Neutral') AS undertone,
+            COALESCE(NULLIF(fs.notes, ''), 'No notes') AS notes,
+            fs.created_at,
+            ('https://picsum.photos/seed/foundation-' || fs.id || '/960/720') AS image_link
+                FROM foundation_shades fs
+                JOIN clients c ON c.id = fs.client_id
+                ORDER BY fs.created_at DESC, fs.id DESC
+                """
+        ).fetchall()
+
+        return {"data": rows}
+
+
 class CreateFoundationShadeRequest(BaseModel):
     client_id: int
     brand: str

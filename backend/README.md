@@ -28,6 +28,7 @@ FastAPI + SQLite backend for the MUA Vault app.
 - `GET /api/clients`
 - `GET /api/appointments`
 - `GET /api/industry/dashboard`
+- `GET /api/industry/dashboard/statuses`
 - `GET /api/industry/productions/{productionId}/uploads`
 - `GET /api/uploads`
 - `GET /api/looks-morgue?category=all&skinTone=all&difficulty=all&limit=40&offset=0`

@@ -16,6 +16,9 @@ from src.routes.eyeshadow_preferences_routes import router as eyeshadow_preferen
 from src.routes.lip_preferences_routes import lip_preferences_router
 from src.routes.makeup_looks_routes import makeup_looks_router
 from src.routes.products_routes import products_router
+from src.routes.productions_routes import productions_router
+from src.routes.effects_makeup_routes import effects_makeup_router
+from src.routes.call_sheets_routes import call_sheets_router
 from src.routes.users_routes import router as users_router
 
 
@@ -33,6 +36,9 @@ api_router.include_router(lip_preferences_router, prefix="/lip-preferences", tag
 api_router.include_router(look_products_router, prefix="/look-products", tags=["look-products"])
 api_router.include_router(makeup_looks_router, prefix="/makeup-looks", tags=["makeup-looks"])
 api_router.include_router(products_router, prefix="/products", tags=["products"])
+api_router.include_router(productions_router, prefix="/productions", tags=["productions"])
+api_router.include_router(effects_makeup_router, prefix="/effects-makeup", tags=["effects-makeup"])
+api_router.include_router(call_sheets_router, prefix="/call-sheets", tags=["call-sheets"])
 api_router.include_router(appointments_router, prefix="/appointments", tags=["appointments"])
 api_router.include_router(industry_router, prefix="/industry", tags=["industry"])
 api_router.include_router(uploads_router, prefix="/uploads", tags=["uploads"])

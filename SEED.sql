@@ -309,7 +309,7 @@ VALUES
     (3, 3, 'lighting_conditions', 3, 'lighting_reference', 1, 'Lighting diagram tied to natural-light setup.'),
     (4, 4, 'character_makeup', 1, 'reference_photo', 1, 'Updated face chart before camera tests.');
 
--- 15) Appointments
+-- 17) Appointments
 INSERT INTO appointments (
     id, client_id, look_id, production_id, shoot_day_id, appointment_date,
     start_time, end_time, event_type, location, status,
@@ -332,7 +332,7 @@ VALUES
         120.00, 1, 60.00, 'Natural look approved by client.'
     );
 
--- 16) Appointment-product usage
+-- 18) Appointment-product usage
 INSERT INTO appointment_products (id, appointment_id, product_id, quantity_used)
 VALUES
     (1, 1, 1, '2 pumps'),
@@ -344,7 +344,7 @@ VALUES
     (7, 3, 2, 'Spot application'),
     (8, 3, 5, '3 sprays');
 
--- 17) Client history
+-- 19) Client history
 INSERT INTO client_history (
     id, client_id, appointment_id, look_id,
     date, notes, client_feedback, would_recommend
@@ -356,7 +356,7 @@ VALUES
         'Loved the skin finish and quick turnaround.', 1
     );
 
--- 18) Foundation shades
+-- 20) Foundation shades
 INSERT INTO foundation_shades (
     id, client_id, brand, shade_name, shade_code, undertone, notes
 )
@@ -365,14 +365,14 @@ VALUES
     (2, 2, 'Dior', 'Backstage Face & Body', '3WO', 'Olive', 'Works well with bronzed look.'),
     (3, 3, 'Rare Beauty', 'Liquid Touch', '230N', 'Neutral', 'Lightweight coverage preferred.');
 
--- 19) Eyeshadow preferences (one row per client)
+-- 21) Eyeshadow preferences (one row per client)
 INSERT INTO eyeshadow_preferences (id, client_id, finish_preference, color_preference, notes)
 VALUES
     (1, 1, 'Shimmer', 'Champagne and soft bronze', 'Avoid chunky glitter.'),
     (2, 2, 'Glitter', 'Copper and terracotta', 'Likes bold evening eye looks.'),
     (3, 3, 'Matte', 'Taupe and soft brown', 'Office-friendly tones only.');
 
--- 20) Lip preferences (one row per client)
+-- 22) Lip preferences (one row per client)
 INSERT INTO lip_preferences (
     id, client_id, lipstick_finish, lip_color_preference, lipgloss_preference, notes
 )
@@ -381,13 +381,13 @@ VALUES
     (2, 2, 'Glossy', 'Warm mauve', 1, 'Open to deeper evening shades.'),
     (3, 3, 'Matte', 'Peach nude', 0, 'Prefers transfer-resistant formulas.');
 
--- 21) Before and after photos
+-- 23) Before and after photos
 INSERT INTO before_after_photos (id, appointment_id, image_type, image_url, notes)
 VALUES
     (1, 3, 'Before', 'https://images.example.com/appointments/3-before.jpg', 'Natural skin, no makeup.'),
     (2, 3, 'After', 'https://images.example.com/appointments/3-after.jpg', 'Finished natural corporate look.');
 
--- 22) Extra industry panel mock data
+-- 24) Extra industry panel mock data (additive rows, not duplicates)
 
 -- Additional productions
 INSERT INTO productions (
@@ -636,7 +636,7 @@ VALUES
     (11, 11, 'character_makeup', 5, 'reference_photo', 1, 'FX face chart for Rook continuity.'),
     (12, 12, 'shoot_days', 7, 'touchup_guide', 1, 'Outdoor reapplication cadence for beach unit.');
 
--- 23) Looks morgue
+-- 25) Looks morgue
 INSERT INTO looks_morgue (
     id, look_name, category, difficulty, skin_tone_tags, occasion_tags,
     image_url, gallery_urls, products_used, color_palette, created_by
@@ -682,7 +682,7 @@ VALUES
         'MUA Vault Team'
     );
 
--- 24) Look morgue assignments
+-- 26) Look morgue assignments
 INSERT INTO look_morgue_assignments (
     id, look_morgue_id, client_id, assigned_by, notes
 )

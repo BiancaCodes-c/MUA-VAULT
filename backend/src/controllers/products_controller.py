@@ -1,4 +1,7 @@
 from typing import Optional
+import json
+from urllib.request import urlopen
+from urllib.error import URLError, HTTPError
 
 from fastapi import APIRouter, HTTPException, Path, Query
 from pydantic import BaseModel
@@ -126,3 +129,47 @@ def create_product(req: CreateProductRequest):
     except Exception as exc:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Failed to create product: {exc}")
+
+
+@router.get("/external/lipsticks")
+def list_external_lipsticks(limit: int = Query(default=20, ge=1, le=100)):
+    """Proxy lipstick catalog data from makeup-api for frontend use."""
+    url = "https://makeup-api.herokuapp.com/api/v1/products.json?product_type=lipstick"
+    try:
+        with urlopen(url, timeout=15) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        if not isinstance(payload, list):
+            raise HTTPException(status_code=502, detail="Unexpected response shape from external API")
+        rows = []
+        for index, item in enumerate(payload[:limit]):
+            if not isinstance(item, dict):
+                continue
+
+            raw_image = str(item.get("image_link") or item.get("api_featured_image") or "").strip()
+            if raw_image.startswith("//"):
+                image_link = f"https:{raw_image}"
+            elif raw_image:
+                image_link = raw_image
+            else:
+                seed_id = item.get("id") or index
+                image_link = f"https://picsum.photos/seed/lipstick-{seed_id}/960/720"
+
+            brand = str(item.get("brand") or "Unknown brand").strip() or "Unknown brand"
+            name = str(item.get("name") or f"Lipstick #{index + 1}").strip() or f"Lipstick #{index + 1}"
+            price = str(item.get("price") or "n/a").strip() or "n/a"
+            price_sign = str(item.get("price_sign") or "$").strip() or "$"
+            product_type = str(item.get("product_type") or "lipstick").strip() or "lipstick"
+
+            rows.append({
+                **item,
+                "brand": brand,
+                "name": name,
+                "price": price,
+                "price_sign": price_sign,
+                "product_type": product_type,
+                "image_link": image_link,
+            })
+
+        return {"data": rows, "meta": {"source": "makeup-api", "count": len(rows)}}
+    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError) as exc:
+        raise HTTPException(status_code=502, detail=f"External API request failed: {exc}")

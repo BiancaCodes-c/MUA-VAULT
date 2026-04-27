@@ -122,7 +122,7 @@ async def upload_makeup_look_image(look_id: int = Path(..., gt=0), file: UploadF
     if not file.filename:
         raise HTTPException(status_code=400, detail="No file uploaded")
 
-    uploads_dir = PathlibPath("backend/data/uploads")
+    uploads_dir = PathlibPath(__file__).resolve().parents[2] / "data" / "uploads"
     uploads_dir.mkdir(parents=True, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

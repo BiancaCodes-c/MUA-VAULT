@@ -3,6 +3,7 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.middleware.error_handler import register_error_handlers
@@ -31,6 +32,10 @@ def create_app() -> FastAPI:
 
     if frontend_dir.exists():
         app.mount("/studio", StaticFiles(directory=str(frontend_dir), html=True), name="studio")
+
+    @app.get("/", include_in_schema=False)
+    async def root_redirect():
+        return RedirectResponse(url="/studio/")
 
     @app.exception_handler(404)
     async def not_found(request: Request, _exc):
