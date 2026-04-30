@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query, HTTPException, Path
 from pydantic import BaseModel
 from typing import Optional
 
@@ -80,7 +80,7 @@ def create_client(req: CreateClientRequest):
             raise HTTPException(status_code=400, detail=f"Email {req.email} already exists")
     
     try:
-        db.execute(
+        cursor = db.execute(
             """
             INSERT INTO clients
             (full_name, phone, email, instagram_handle, skin_tone, undertone, skin_type,
@@ -103,11 +103,14 @@ def create_client(req: CreateClientRequest):
             ),
         )
         db.commit()
-        
-        # Fetch and return the created client
-        result = db.execute("SELECT last_insert_rowid()").fetchone()
-        client_id = result[0]
-        
+
+        # Use cursor.lastrowid (works with row_factory that returns dicts)
+        client_id = getattr(cursor, "lastrowid", None)
+        if not client_id:
+            # Fallback: try selecting last_insert_rowid() and read by column name
+            row = db.execute("SELECT last_insert_rowid() AS last_id").fetchone()
+            client_id = row.get("last_id") if isinstance(row, dict) else row[0]
+
         client = db.execute(
             """
             SELECT id, full_name, phone, email, instagram_handle, skin_tone, undertone, skin_type,
@@ -116,9 +119,76 @@ def create_client(req: CreateClientRequest):
             """,
             (client_id,),
         ).fetchone()
-        
+
         return {"data": client, "id": client_id, "message": "Client created successfully"}
-    
+
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Failed to create client: {str(e)}")
+
+
+@router.get("/{client_id}")
+def get_client(client_id: int = Path(..., gt=0)):
+    """Get a specific client's profile details."""
+    db = get_db()
+    
+    client = db.execute(
+        """
+        SELECT id, full_name, phone, email, instagram_handle, skin_tone, undertone, skin_type,
+               allergies, sensitivity_notes, preferred_brands, notes, photo_url, created_at, updated_at
+        FROM clients WHERE id = ?
+        """,
+        (client_id,),
+    ).fetchone()
+    
+    if not client:
+        raise HTTPException(status_code=404, detail=f"Client {client_id} not found")
+    
+    return {"data": client}
+
+
+@router.delete("/{client_id}")
+def delete_client(client_id: int = Path(..., gt=0)):
+    """Delete a client and clean up related image links."""
+    db = get_db()
+
+    client = db.execute("SELECT id FROM clients WHERE id = ?", (client_id,)).fetchone()
+    if not client:
+        raise HTTPException(status_code=404, detail=f"Client {client_id} not found")
+
+    linked_upload_rows = db.execute(
+        """
+        SELECT ul.upload_id
+        FROM upload_links ul
+        WHERE ul.entity_type = 'clients' AND ul.entity_id = ?
+        """,
+        (client_id,),
+    ).fetchall()
+
+    upload_ids = []
+    for row in linked_upload_rows:
+        upload_id = row.get("upload_id") if isinstance(row, dict) else row[0]
+        if upload_id is not None:
+            upload_ids.append(upload_id)
+
+    try:
+        db.execute(
+            "DELETE FROM upload_links WHERE entity_type = 'clients' AND entity_id = ?",
+            (client_id,),
+        )
+        db.execute("DELETE FROM clients WHERE id = ?", (client_id,))
+
+        for upload_id in upload_ids:
+            remaining = db.execute(
+                "SELECT COUNT(*) AS count FROM upload_links WHERE upload_id = ?",
+                (upload_id,),
+            ).fetchone()
+            remaining_count = remaining.get("count") if isinstance(remaining, dict) else remaining[0]
+            if remaining_count == 0:
+                db.execute("DELETE FROM uploads WHERE id = ?", (upload_id,))
+
+        db.commit()
+        return {"message": f"Client {client_id} deleted successfully"}
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Failed to delete client: {exc}")

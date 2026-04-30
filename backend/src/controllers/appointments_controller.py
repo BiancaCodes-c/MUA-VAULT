@@ -96,7 +96,7 @@ def book_appointment(req: BookAppointmentRequest):
             raise HTTPException(status_code=400, detail="end_time must be in HH:MM format")
     
     try:
-        db.execute(
+        cursor = db.execute(
             """
             INSERT INTO appointments
             (client_id, look_id, appointment_date, start_time, end_time, event_type, 
@@ -119,11 +119,14 @@ def book_appointment(req: BookAppointmentRequest):
             ),
         )
         db.commit()
-        
-        # Fetch and return the created appointment
-        result = db.execute("SELECT last_insert_rowid()").fetchone()
-        appointment_id = result[0]
-        
+
+        # Use the cursor's lastrowid (works with row_factory that returns dicts)
+        appointment_id = getattr(cursor, "lastrowid", None)
+        if not appointment_id:
+            # Fallback: try selecting last_insert_rowid() and read by column name
+            row = db.execute("SELECT last_insert_rowid() AS last_id").fetchone()
+            appointment_id = row.get("last_id") if isinstance(row, dict) else row[0]
+
         appointment = db.execute(
             """
             SELECT id, client_id, look_id, appointment_date, start_time, end_time,
@@ -132,10 +135,11 @@ def book_appointment(req: BookAppointmentRequest):
             """,
             (appointment_id,),
         ).fetchone()
-        
+
         return {"data": appointment, "id": appointment_id, "message": "Appointment booked successfully"}
     
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Failed to book appointment: {str(e)}")
+        # Return repr(e) temporarily for debugging to capture full error details
+        raise HTTPException(status_code=400, detail=f"Failed to book appointment: {repr(e)}")
 

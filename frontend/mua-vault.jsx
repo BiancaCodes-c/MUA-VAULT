@@ -560,6 +560,128 @@ body::after {
   box-shadow: 0 0 10px var(--teal-glow);
 }
 
+.theme-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.theme-chip {
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  color: var(--text-dim);
+  padding: 10px 12px;
+  border-radius: 999px;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-chip:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.theme-chip.active {
+  border-color: var(--pink);
+  color: var(--pink);
+  background: rgba(244,114,182,0.08);
+  box-shadow: 0 0 12px var(--pink-glow);
+}
+
+.connector-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.connector-card {
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(13,30,28,0.92), rgba(7,20,18,0.96));
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.connector-card.accent {
+  border-color: rgba(244,114,182,0.35);
+  box-shadow: 0 0 24px rgba(244,114,182,0.08);
+}
+
+.connector-kicker {
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 10px;
+}
+
+.connector-card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.connector-card p {
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.foundation-ref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+
+.foundation-ref-card {
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.foundation-ref-card:hover {
+  border-color: var(--teal);
+  box-shadow: 0 0 12px var(--teal-glow);
+}
+
+.foundation-ref-card.active {
+  border-color: var(--pink);
+  background: rgba(244,114,182,0.08);
+  box-shadow: 0 0 16px var(--pink-glow);
+}
+
+.foundation-ref-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+
+.foundation-ref-name {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.foundation-ref-meta {
+  font-size: 9px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
 .row-upload-btn {
   font-size: 8px;
   letter-spacing: 0.25em;
@@ -590,6 +712,36 @@ body::after {
   gap: 8px;
   margin-bottom: 18px;
   flex-wrap: wrap;
+}
+
+.film-submenu {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: -6px 0 18px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(7,20,18,0.86);
+}
+
+.film-submenu-btn {
+  border: 1px solid rgba(13,158,143,0.25);
+  background: var(--bg-3);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.film-submenu-btn:hover {
+  border-color: var(--pink);
+  color: var(--pink);
+  box-shadow: 0 0 12px var(--pink-glow);
 }
 .filter-pill {
   font-size: 9px;
@@ -947,8 +1099,19 @@ body::after {
   border: 1px solid var(--border);
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--bg-3);
+  background-attachment: scroll;
   flex-shrink: 0;
   margin-right: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  will-change: transform;
+}
+.row-thumb:hover {
+  border-color: var(--teal);
+  box-shadow: 0 0 8px var(--teal-glow);
+  transform: scale(1.05);
 }
 
 .prod-type-tag {
@@ -1605,10 +1768,26 @@ const navItems = [
 ];
 
 const filters = ["All", "Editorial", "Bridal", "Film", "Theater", "Runway", "FX"];
+const LOOK_THEMES = ["Bridal", "Glam", "Fashion", "Editorial", "Runway", "Film", "Theater", "FX"];
 
 const API_BASE = "/api";
 const PRODUCTION_TYPES = ["Film", "TV Show", "Commercial", "Photoshoot", "Theater", "Music Video", "Editorial"];
-const PRODUCT_CATEGORIES = ["Foundation", "Concealer", "Eyeshadow", "Lipstick", "Lipgloss", "Blush", "Bronzer", "Highlighter", "Primer", "Setting Spray"];
+const SKIN_TONES = ["Fair", "Light", "Medium", "Tan", "Deep"];
+const UNDERTONES = ["Cool", "Warm", "Neutral", "Olive"];
+const PRODUCT_CATEGORIES = [
+  "Foundation",
+  "Concealer",
+  "Eyeshadow",
+  "Lipstick",
+  "Lipgloss",
+  "Blush",
+  "Bronzer",
+  "Highlighter",
+  "Primer",
+  "Setting Spray",
+  "Powder",
+  "Moisturizer",
+];
 const FX_EFFECT_TYPES = ["Bruise", "Cut", "Burn", "Zombie", "Old Age", "Fantasy", "Prosthetic"];
 const VIEW_TO_HASH = {
   dashboard: "/dashboard",
@@ -1616,9 +1795,12 @@ const VIEW_TO_HASH = {
   "browse-all": "/looks",
   "runway-looks": "/looks/runway",
   "fx-looks": "/looks/fx",
+  "new-look": "/looks/new",
+  "look-morgue-connector": "/looks/morgue",
   "manage-prods": "/productions/manage",
   "full-calendar": "/appointments/calendar",
   "all-clients": "/clients",
+  "client-profile": "/clients/profile",
   "new-appointment": "/appointments/new",
   "add-client": "/clients/new",
   "production-center": "/productions/new",
@@ -1651,6 +1833,13 @@ function parseArray(value) {
   } catch {
     return [];
   }
+}
+
+function parseThemeList(categoryRaw) {
+  return String(categoryRaw || "")
+    .split(",")
+    .map((theme) => theme.trim())
+    .filter(Boolean);
 }
 
 function formatMoney(raw) {
@@ -1690,17 +1879,16 @@ function resolveImageUrl(raw) {
 }
 
 function placeholderImage(seed, width = 960, height = 720) {
-  const cleanSeed = encodeURIComponent(String(seed || "mua-vault"));
-  return `https://picsum.photos/seed/${cleanSeed}/${width}/${height}`;
+  // Placeholder images disabled - use real uploads only
+  return null;
 }
 
 function lookPlaceholderImage(look) {
-  const seed = `${look?.cat || "look"}-${look?.name || "style"}-${look?.id || "0"}`;
-  return placeholderImage(seed, 960, 720);
+  return null;
 }
 
 function resolveLookPreviewImage(look) {
-  return resolveImageUrl(look?.imageUrl) || lookPlaceholderImage(look);
+  return resolveImageUrl(look?.imageUrl) || null;
 }
 
 function resolveUploadPreviewImage(row) {
@@ -1709,10 +1897,12 @@ function resolveUploadPreviewImage(row) {
   if (isImage && fileUrl) {
     return fileUrl;
   }
-  const seed = `${row?.entity_type || "upload"}-${row?.entity_id || "0"}-${row?.upload_id || "0"}`;
-  return placeholderImage(seed, 960, 720);
+  return null;
 }
 
+function noImagePlaceholder() {
+  return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 720'%3E%3Crect fill='%230f1f1c' width='960' height='720'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%237ab5ae' font-size='32' font-family='sans-serif'%3ENo Image Uploaded%3C/text%3E%3C/svg%3E";
+}
 function detailImageUrl(item) {
   if (!item || typeof item !== "object") {
     return "";
@@ -1733,10 +1923,7 @@ function lookMatchesFilter(categoryRaw, filterRaw) {
   if (filter === "all") {
     return true;
   }
-  if (filter === "fx") {
-    return category.includes("fx");
-  }
-  return category === filter;
+  return category.includes(filter);
 }
 
 function initials(name) {
@@ -1749,6 +1936,9 @@ function initials(name) {
 
 function MuaVault() {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [filmMenuOpen, setFilmMenuOpen] = useState(false);
+  const [bridalMenuOpen, setBridalMenuOpen] = useState(false);
+  const [editorialMenuOpen, setEditorialMenuOpen] = useState(false);
   const [cursor, setCursor] = useState({ x: -100, y: -100 });
   const [ring, setRing] = useState({ x: -100, y: -100 });
   const ringRef = useRef({ x: -100, y: -100 });
@@ -1776,6 +1966,9 @@ function MuaVault() {
   const [allUploadsData, setAllUploadsData] = useState([]);
   const [productsData, setProductsData] = useState([]);
   const [externalLipsticks, setExternalLipsticks] = useState([]);
+  const [externalFoundations, setExternalFoundations] = useState([]);
+  const [externalEyeshadows, setExternalEyeshadows] = useState([]);
+  const [externalApiProducts, setExternalApiProducts] = useState([]);
   const [foundationChoices, setFoundationChoices] = useState([]);
   const [productionsData, setProductionsData] = useState([]);
   const [effectsMakeupData, setEffectsMakeupData] = useState([]);
@@ -1863,6 +2056,33 @@ function MuaVault() {
     talent_call_time: "",
     notes: "",
   });
+  const [lookForm, setLookForm] = useState({
+    look_name: "",
+    description: "",
+    skin_tone_match: "",
+    difficulty_level: "Intermediate",
+    image_url: "",
+  });
+  const [lookThemes, setLookThemes] = useState(["Bridal"]);
+  const [selectedFoundationChoiceId, setSelectedFoundationChoiceId] = useState(null);
+
+  // Client Profile & Scheduling Features
+  const [selectedClientId, setSelectedClientId] = useState(null);
+  const [selectedClientData, setSelectedClientData] = useState(null);
+  const [clientLog, setClientLog] = useState(() => {
+    try {
+      const raw = window.localStorage.getItem("muaVaultClientLog");
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [calendarMonth, setCalendarMonth] = useState(new Date());
+  const [calendarAppointments, setCalendarAppointments] = useState({});
+  
+  // Entity images - keyed by "entityType-entityId"
+  const [entityImages, setEntityImages] = useState({});
+  const [imagesLoading, setImagesLoading] = useState({});
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -1887,6 +2107,33 @@ function MuaVault() {
       // localStorage can fail in strict browser contexts.
     }
   }, [historyEntries]);
+
+  useEffect(() => {
+    appointmentsData.slice(0, 12).forEach((appt) => {
+      const key = `appointments-${appt.id}`;
+      if (!entityImages[key] && !imagesLoading[key]) {
+        loadEntityImages("appointments", appt.id);
+      }
+    });
+  }, [appointmentsData, entityImages, imagesLoading]);
+
+  useEffect(() => {
+    clientsData.slice(0, 12).forEach((client) => {
+      const key = `clients-${client.id}`;
+      if (!entityImages[key] && !imagesLoading[key]) {
+        loadEntityImages("clients", client.id);
+      }
+    });
+  }, [clientsData, entityImages, imagesLoading]);
+
+  useEffect(() => {
+    productsData.slice(0, 12).forEach((product) => {
+      const key = `products-${product.id}`;
+      if (!entityImages[key] && !imagesLoading[key]) {
+        loadEntityImages("products", product.id);
+      }
+    });
+  }, [productsData, entityImages, imagesLoading]);
 
   useEffect(() => {
     try {
@@ -1937,6 +2184,99 @@ function MuaVault() {
     }
     setPreviewImage({ url: resolved, title: title || "Image preview" });
     addHistoryEntry("Opened image", { title: title || "Image preview" });
+  }
+
+  // Client Profile & Scheduling Functions
+  async function loadClientProfile(clientId) {
+    try {
+      const response = await fetch(`${API_BASE}/clients/${clientId}`);
+      if (!response.ok) throw new Error("Failed to load client");
+      const json = await response.json();
+      setSelectedClientData(json.data);
+      
+      // Load client history
+      const historyResponse = await fetch(`${API_BASE}/client-history/client/${clientId}`);
+      if (historyResponse.ok) {
+        const historyJson = await historyResponse.json();
+        setSelectedClientData(prev => ({ ...prev, appointment_history: historyJson.data }));
+      }
+    } catch (err) {
+      console.error("Error loading client profile:", err);
+      alert("Could not load client profile");
+    }
+  }
+
+  function logClientCreation(clientName, clientData) {
+    const newEntry = {
+      id: Date.now(),
+      name: clientName,
+      timestamp: new Date().toISOString(),
+      data: clientData
+    };
+    const updated = [newEntry, ...clientLog].slice(0, 100);
+    setClientLog(updated);
+    try {
+      window.localStorage.setItem("muaVaultClientLog", JSON.stringify(updated));
+    } catch {
+      // localStorage can fail in strict browser contexts
+    }
+  }
+
+  function getCalendarAppointments() {
+    const apptsByDate = {};
+    appointmentsData.forEach(appt => {
+      const date = appt.appointment_date ? appt.appointment_date.split('T')[0] : null;
+      if (date) {
+        if (!apptsByDate[date]) apptsByDate[date] = [];
+        apptsByDate[date].push(appt);
+      }
+    });
+    return apptsByDate;
+  }
+
+  function handlePrevMonth() {
+    setCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  }
+
+  function handleNextMonth() {
+    setCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  }
+
+  function getDaysInMonth(date) {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  }
+
+  function getFirstDayOfMonth(date) {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  }
+
+  async function loadEntityImages(entityType, entityId) {
+    const key = `${entityType}-${entityId}`;
+    if (imagesLoading[key]) return; // Already loading
+    
+    setImagesLoading(prev => ({ ...prev, [key]: true }));
+    try {
+      const response = await fetch(`${API_BASE}/uploads/${entityType}/${entityId}/images`);
+      if (response.ok) {
+        const json = await response.json();
+        setEntityImages(prev => ({ ...prev, [key]: json.data || [] }));
+      }
+    } catch (err) {
+      console.error(`Failed to load images for ${key}:`, err);
+    } finally {
+      setImagesLoading(prev => ({ ...prev, [key]: false }));
+    }
+  }
+
+  function getEntityImages(entityType, entityId) {
+    const key = `${entityType}-${entityId}`;
+    return entityImages[key] || [];
+  }
+
+  function getEntityPrimaryImage(entityType, entityId) {
+    const images = getEntityImages(entityType, entityId);
+    if (images.length === 0) return null;
+    return images.find(img => img.is_primary === 1) || images[0];
   }
 
   useEffect(() => {
@@ -2007,6 +2347,9 @@ function MuaVault() {
           uploadsRes,
           productsRes,
           externalLipsticksRes,
+          externalFoundationsRes,
+          externalEyeshadowsRes,
+          externalApiProductsRes,
           foundationShadesRes,
           productionsRes,
           effectsRes,
@@ -2021,6 +2364,9 @@ function MuaVault() {
           fetch(`${API_BASE}/uploads/`),
           fetch(`${API_BASE}/products/?limit=100&offset=0`),
           fetch(`${API_BASE}/products/external/lipsticks?limit=24`),
+          fetch(`${API_BASE}/look-products/external/foundations?limit=24`),
+          fetch(`${API_BASE}/products/external/eyeshadows?limit=24`),
+          fetch(`${API_BASE}/look-products/external/products?limit=24`),
           fetch(`${API_BASE}/foundation-shades/?limit=100&offset=0`),
           fetch(`${API_BASE}/productions/?limit=100&offset=0`),
           fetch(`${API_BASE}/effects-makeup/?limit=100&offset=0`),
@@ -2036,6 +2382,9 @@ function MuaVault() {
         const uploadsResponse = uploadsRes.status === "fulfilled" ? uploadsRes.value : null;
         const productsResponse = productsRes.status === "fulfilled" ? productsRes.value : null;
         const externalLipsticksResponse = externalLipsticksRes.status === "fulfilled" ? externalLipsticksRes.value : null;
+        const externalFoundationsResponse = externalFoundationsRes.status === "fulfilled" ? externalFoundationsRes.value : null;
+        const externalEyeshadowsResponse = externalEyeshadowsRes.status === "fulfilled" ? externalEyeshadowsRes.value : null;
+        const externalApiProductsResponse = externalApiProductsRes.status === "fulfilled" ? externalApiProductsRes.value : null;
         const foundationShadesResponse = foundationShadesRes.status === "fulfilled" ? foundationShadesRes.value : null;
         const productionsResponse = productionsRes.status === "fulfilled" ? productionsRes.value : null;
         const effectsResponse = effectsRes.status === "fulfilled" ? effectsRes.value : null;
@@ -2054,6 +2403,9 @@ function MuaVault() {
         const uploadsPayload = uploadsResponse?.ok ? await uploadsResponse.json() : { data: [] };
         const productsPayload = productsResponse?.ok ? await productsResponse.json() : { data: [] };
         const externalLipsticksPayload = externalLipsticksResponse?.ok ? await externalLipsticksResponse.json() : { data: [] };
+        const externalFoundationsPayload = externalFoundationsResponse?.ok ? await externalFoundationsResponse.json() : { data: [] };
+        const externalEyeshadowsPayload = externalEyeshadowsResponse?.ok ? await externalEyeshadowsResponse.json() : { data: [] };
+        const externalApiProductsPayload = externalApiProductsResponse?.ok ? await externalApiProductsResponse.json() : { data: [] };
         const foundationShadesPayload = foundationShadesResponse?.ok ? await foundationShadesResponse.json() : { data: [] };
         const productionsPayload = productionsResponse?.ok ? await productionsResponse.json() : { data: [] };
         const effectsPayload = effectsResponse?.ok ? await effectsResponse.json() : { data: [] };
@@ -2082,6 +2434,9 @@ function MuaVault() {
         const productionRows = Array.isArray(dashboardStatuses?.productionRows) ? dashboardStatuses.productionRows : [];
         const productsRows = Array.isArray(productsPayload?.data) ? productsPayload.data : [];
         const externalLipstickRows = Array.isArray(externalLipsticksPayload?.data) ? externalLipsticksPayload.data : [];
+        const externalFoundationRows = Array.isArray(externalFoundationsPayload?.data) ? externalFoundationsPayload.data : [];
+        const externalEyeshadowRows = Array.isArray(externalEyeshadowsPayload?.data) ? externalEyeshadowsPayload.data : [];
+        const externalAllProductRows = Array.isArray(externalApiProductsPayload?.data) ? externalApiProductsPayload.data : [];
         const foundationChoiceRows = Array.isArray(foundationShadesPayload?.data) ? foundationShadesPayload.data : [];
         const productionsRows = Array.isArray(productionsPayload?.data) ? productionsPayload.data : [];
         const effectsRows = Array.isArray(effectsPayload?.data) ? effectsPayload.data : [];
@@ -2149,7 +2504,11 @@ function MuaVault() {
             id: row.id,
             name: row.look_name || "Untitled Look",
             cat: row.category || "Look",
-            tags: [row.skin_tone_match || "All tones", row.difficulty_level || "Intermediate"],
+            tags: [
+              ...parseThemeList(row.category),
+              row.skin_tone_match || "All tones",
+              row.difficulty_level || "Intermediate",
+            ].filter((tag, tagIndex, tagList) => tag && tagList.indexOf(tag) === tagIndex),
             imageUrl: row.image_url || null,
             swatch: swatches[index % swatches.length],
             featured: index === 0,
@@ -2169,6 +2528,9 @@ function MuaVault() {
         setClientsData(clientRows);
         setProductsData(productsRows);
         setExternalLipsticks(externalLipstickRows);
+        setExternalFoundations(externalFoundationRows);
+        setExternalEyeshadows(externalEyeshadowRows);
+        setExternalApiProducts(externalAllProductRows);
         setFoundationChoices(foundationChoiceRows);
         setProductionsData(productionsRows);
         setEffectsMakeupData(effectsRows);
@@ -2188,6 +2550,9 @@ function MuaVault() {
         setAllUploadsData([]);
         setProductsData([]);
         setExternalLipsticks([]);
+        setExternalFoundations([]);
+        setExternalEyeshadows([]);
+        setExternalApiProducts([]);
         setFoundationChoices([]);
         setProductionsData([]);
         setEffectsMakeupData([]);
@@ -2260,6 +2625,18 @@ function MuaVault() {
       setApiStatus("Look image uploaded");
       addHistoryEntry("Look image uploaded", { look_id: lookImageTargetId, filename: file.name });
       setLookImageTargetId(null);
+      
+      // Immediately refetch looks data to display new image
+      try {
+        const res = await fetch(`${API_BASE}/makeup-looks/?limit=100&offset=0`);
+        if (res.ok) {
+          const payload = await res.json();
+          setLooks(Array.isArray(payload?.data) ? payload.data : []);
+        }
+      } catch (err) {
+        console.error("Error refetching looks:", err);
+      }
+      
       refreshData();
     } catch (err) {
       setApiStatus(`Look image upload failed: ${err.message}`);
@@ -2275,29 +2652,34 @@ function MuaVault() {
     setSectionImageTarget(target);
     if (sectionImageInputRef.current) {
       sectionImageInputRef.current.value = "";
+      sectionImageInputRef.current.multiple = true; // Allow multiple files
       sectionImageInputRef.current.click();
     }
   }
 
   async function handleSectionImageFileChange(event) {
-    const file = (event.target.files || [])[0];
-    if (!file || !sectionImageTarget) {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0 || !sectionImageTarget) {
       return;
     }
 
     try {
-      setApiStatus(`Uploading picture for ${sectionImageTarget.label}...`);
+      setApiStatus(`Uploading ${files.length} image(s) for ${sectionImageTarget.label}...`);
       const formData = new FormData();
-      formData.append("file", file);
+      
+      // Add all files
+      files.forEach(file => {
+        formData.append("files", file);
+      });
+      
       formData.append("entityType", sectionImageTarget.entityType);
       formData.append("entityId", String(sectionImageTarget.entityId));
       formData.append("fieldName", sectionImageTarget.fieldName);
-      formData.append("isPrimary", sectionImageTarget.isPrimary === false ? "0" : "1");
       if (sectionImageTarget.notes) {
         formData.append("notes", sectionImageTarget.notes);
       }
 
-      const response = await fetch(`${API_BASE}/uploads/linked-image`, {
+      const response = await fetch(`${API_BASE}/uploads/linked-images`, {
         method: "POST",
         body: formData,
       });
@@ -2313,13 +2695,19 @@ function MuaVault() {
         throw new Error(message);
       }
 
-      setApiStatus(`Picture uploaded for ${sectionImageTarget.label}`);
-      addHistoryEntry("Section image uploaded", {
+      setApiStatus(`${files.length} image(s) uploaded for ${sectionImageTarget.label}`);
+      addHistoryEntry("Multiple images uploaded", {
         entity_type: sectionImageTarget.entityType,
         entity_id: sectionImageTarget.entityId,
         field_name: sectionImageTarget.fieldName,
-        filename: file.name,
+        count: files.length,
       });
+      
+      // Load the images for this entity
+      const entityType = sectionImageTarget.entityType;
+      const entityId = sectionImageTarget.entityId;
+      await loadEntityImages(entityType, entityId);
+      
       setSectionImageTarget(null);
       refreshData();
     } catch (err) {
@@ -2438,7 +2826,7 @@ function MuaVault() {
   async function submitClientForm(event) {
     event.preventDefault();
     try {
-      await postJson(`${API_BASE}/clients/`, {
+      const response = await postJson(`${API_BASE}/clients/`, {
         full_name: clientForm.full_name,
         email: clientForm.email || null,
         phone: clientForm.phone || null,
@@ -2448,6 +2836,14 @@ function MuaVault() {
         skin_type: clientForm.skin_type || null,
         notes: clientForm.notes || null,
       });
+      
+      // Log the client creation
+      logClientCreation(clientForm.full_name, {
+        email: clientForm.email,
+        phone: clientForm.phone,
+        skin_tone: clientForm.skin_tone
+      });
+      
       setApiStatus("Client created");
       addHistoryEntry("Created client", {
         full_name: clientForm.full_name,
@@ -2536,6 +2932,34 @@ function MuaVault() {
     } catch (err) {
       alert(`Could not create product: ${err.message}`);
     }
+  }
+
+  function applyApiProductToForm(item, categoryOverride = "") {
+    if (!item) {
+      return;
+    }
+
+    const resolvedCategory = categoryOverride || item.category || item.product_type || productForm.category;
+    const normalizedCategory = String(resolvedCategory || "").toLowerCase().includes("moist")
+      ? "Moisturizer"
+      : String(resolvedCategory || "").toLowerCase().includes("powder")
+        ? "Powder"
+        : String(resolvedCategory || "").toLowerCase().includes("eye")
+          ? "Eyeshadow"
+          : String(resolvedCategory || "").toLowerCase().includes("lip")
+            ? "Lipstick"
+            : String(resolvedCategory || "").toLowerCase().includes("foundation")
+              ? "Foundation"
+              : resolvedCategory;
+
+    setProductForm((prev) => ({
+      ...prev,
+      name: item.name || prev.name,
+      brand: item.brand || prev.brand,
+      category: normalizedCategory || prev.category,
+      shade: item.shade || item.name || prev.shade,
+      notes: item.price ? `API source price: ${item.price_sign || "$"}${item.price}` : prev.notes,
+    }));
   }
 
   async function submitFxForm(event) {
@@ -2642,22 +3066,36 @@ function MuaVault() {
   }
 
   async function handleCreateLook() {
-    const lookName = (prompt("Look Name") || "").trim();
-    if (!lookName) return;
-    const category = (prompt("Category") || "Editorial").trim();
-    const difficulty = (prompt("Difficulty (Beginner, Intermediate, Advanced)") || "Intermediate").trim();
-    const imageUrl = (prompt("Image URL (optional)") || "").trim() || null;
+    setCurrentView("new-look");
+  }
+
+  async function submitLookForm(event) {
+    event.preventDefault();
+
+    const selectedCategory = lookThemes.length ? lookThemes.join(", ") : "Editorial";
 
     try {
       await postJson(`${API_BASE}/makeup-looks/`, {
-        look_name: lookName,
-        category,
-        difficulty_level: difficulty,
-        image_url: imageUrl,
+        look_name: lookForm.look_name.trim(),
+        category: selectedCategory,
+        description: lookForm.description.trim() || null,
+        skin_tone_match: lookForm.skin_tone_match || null,
+        difficulty_level: lookForm.difficulty_level,
+        image_url: lookForm.image_url.trim() || null,
       });
       setApiStatus("Makeup look created");
-      addHistoryEntry("Created look", { look_name: lookName, category });
+      addHistoryEntry("Created look", { look_name: lookForm.look_name, category: selectedCategory });
+      setLookForm({
+        look_name: "",
+        description: "",
+        skin_tone_match: "",
+        difficulty_level: "Intermediate",
+        image_url: "",
+      });
+      setLookThemes(["Bridal"]);
+      setSelectedFoundationChoiceId(null);
       refreshData();
+      setCurrentView("browse-all");
     } catch (err) {
       alert(`Could not create look: ${err.message}`);
     }
@@ -2734,6 +3172,41 @@ function MuaVault() {
 
   function handleBrowseAll() {
     setCurrentView("browse-all");
+  }
+
+  function handleOpenLookMorgueConnector() {
+    setCurrentView("look-morgue-connector");
+  }
+
+  function handleOpenLookMorgue() {
+    setCurrentView("dashboard");
+    window.setTimeout(() => {
+      const anchor = document.getElementById("look-morgue-anchor");
+      if (anchor) {
+        anchor.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 0);
+  }
+
+  function toggleLookTheme(theme) {
+    setLookThemes((prev) => {
+      if (prev.includes(theme)) {
+        return prev.filter((item) => item !== theme);
+      }
+      return [...prev, theme];
+    });
+  }
+
+  function chooseFoundationReference(choice) {
+    if (!choice) {
+      return;
+    }
+    setSelectedFoundationChoiceId(choice.id);
+    const foundationLabel = [choice.brand, choice.shade_name, choice.shade_code].filter(Boolean).join(" · ");
+    setLookForm((value) => ({
+      ...value,
+      skin_tone_match: foundationLabel || value.skin_tone_match,
+    }));
   }
 
   function handleLoginView() {
@@ -2829,6 +3302,45 @@ function MuaVault() {
     setCurrentView("all-clients");
   }
 
+  function handleClientProfile(clientId) {
+    setSelectedClientId(clientId);
+    loadClientProfile(clientId);
+    setCurrentView("client-profile");
+  }
+
+  async function deleteClient(clientId, clientName = "this client") {
+    const confirmed = window.confirm(`Delete ${clientName}? This will remove the client and related history.`);
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/clients/${clientId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        let message = `Delete failed (${response.status})`;
+        try {
+          const err = await response.json();
+          message = err?.detail || message;
+        } catch {
+          // no-op
+        }
+        throw new Error(message);
+      }
+
+      addHistoryEntry("Deleted client", { client_id: clientId, client_name: clientName });
+      setApiStatus(`Deleted ${clientName}`);
+      setSelectedClientData(null);
+      setSelectedClientId(null);
+      setCurrentView("all-clients");
+      refreshData();
+    } catch (err) {
+      alert(`Could not delete client: ${err.message}`);
+    }
+  }
+
   const runwayLooks = looks.filter((lk) => lookMatchesFilter(lk.cat, "Runway"));
   const fxLooks = looks.filter((lk) => lookMatchesFilter(lk.cat, "FX"));
   const foundationPageChoices = foundationChoices.length ? foundationChoices : [];
@@ -2857,7 +3369,7 @@ function MuaVault() {
 
   function productionCoverUrl(production) {
     if (!production) {
-      return placeholderImage("production-empty", 960, 720);
+      return noImagePlaceholder();
     }
     const fromUploads = productionCoverMap[String(production.id)];
     if (fromUploads) {
@@ -2867,7 +3379,7 @@ function MuaVault() {
     if (fromRecord) {
       return fromRecord;
     }
-    return placeholderImage(`production-${production.id || production.name || "card"}`, 960, 720);
+    return noImagePlaceholder();
   }
 
   function entityTypePhotoRows(entityType) {
@@ -2888,7 +3400,7 @@ function MuaVault() {
         {rows.length ? (
           <div className="library-strip">
             {rows.map((row, idx) => {
-              const url = resolveImageUrl(row.storage_url) || placeholderImage(`${entityType}-${row.entity_id || idx}`, 960, 720);
+              const url = resolveImageUrl(row.storage_url) || noImagePlaceholder();
               return (
                 <div
                   key={`${entityType}-${row.upload_id || idx}`}
@@ -3013,9 +3525,9 @@ function MuaVault() {
                     }}
                   />
                   <div className="view-item-title">{lk.name}</div>
-                  <div className="view-item-meta">{lk.cat}</div>
+                  <div className="view-item-meta">{parseThemeList(lk.cat).join(" · ") || lk.cat}</div>
                   <div style={{ marginTop: 8, fontSize: 8, color: "var(--text-faint)" }}>
-                    {lk.tags.join(" · ")}
+                    {lk.tags.slice(0, 3).join(" · ")}
                   </div>
                   <button className="panel-link" style={{ marginTop: 8 }} onClick={(event) => { event.stopPropagation(); openLookImagePicker(lk.id); }}>
                     Upload Photo -&gt;
@@ -3023,6 +3535,166 @@ function MuaVault() {
                   <button className="panel-link" style={{ marginTop: 8 }} onClick={(event) => { event.stopPropagation(); openDetail("Look", lk); }}>
                     View Details -&gt;
                   </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {currentView !== "login" && currentView === "new-look" && (
+        <div className="view-modal">
+          <div className="view-content">
+            <div className="view-header">
+              <h2 className="view-title">New Look</h2>
+              <button className="view-close" onClick={() => setCurrentView("dashboard")}>✕</button>
+            </div>
+
+            <form className="entity-form" onSubmit={submitLookForm}>
+              <div className="entity-grid">
+                <label className="entity-label">
+                  Look Name
+                  <input className="entity-input" required value={lookForm.look_name} onChange={(e) => setLookForm((v) => ({ ...v, look_name: e.target.value }))} />
+                </label>
+                <label className="entity-label">
+                  Skin Tone Match
+                  <select className="entity-input" value={lookForm.skin_tone_match} onChange={(e) => setLookForm((v) => ({ ...v, skin_tone_match: e.target.value }))}>
+                    <option value="">All tones</option>
+                    {SKIN_TONES.map((tone) => <option key={tone} value={tone}>{tone}</option>)}
+                  </select>
+                </label>
+                <label className="entity-label">
+                  Difficulty
+                  <select className="entity-input" value={lookForm.difficulty_level} onChange={(e) => setLookForm((v) => ({ ...v, difficulty_level: e.target.value }))}>
+                    <option>Beginner</option>
+                    <option>Intermediate</option>
+                    <option>Advanced</option>
+                  </select>
+                </label>
+                <label className="entity-label">
+                  Image URL
+                  <input className="entity-input" value={lookForm.image_url} onChange={(e) => setLookForm((v) => ({ ...v, image_url: e.target.value }))} placeholder="Optional upload link" />
+                </label>
+              </div>
+
+              <label className="entity-label">
+                Description
+                <textarea className="entity-input entity-textarea" value={lookForm.description} onChange={(e) => setLookForm((v) => ({ ...v, description: e.target.value }))} />
+              </label>
+
+              <div style={{ marginTop: 14 }}>
+                <div className="section-head" style={{ marginBottom: 10 }}>
+                  <span className="section-tag pink">Themes</span>
+                  <h3 className="view-title" style={{ fontSize: 18 }}>Choose look themes</h3>
+                  <button className="section-action" type="button" onClick={handleOpenLookMorgueConnector}>Open Connector</button>
+                </div>
+                <div className="theme-chip-grid">
+                  {LOOK_THEMES.map((theme) => (
+                    <button
+                      key={theme}
+                      type="button"
+                      className={`theme-chip ${lookThemes.includes(theme) ? "active" : ""}`}
+                      onClick={() => toggleLookTheme(theme)}
+                    >
+                      {theme}
+                    </button>
+                  ))}
+                </div>
+                <div style={{ marginTop: 10, fontSize: 10, color: "var(--text-faint)", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                  Selected: {lookThemes.length ? lookThemes.join(" · ") : "None"}
+                </div>
+              </div>
+
+              <div style={{ marginTop: 18 }}>
+                <div className="section-head" style={{ marginBottom: 10 }}>
+                  <span className="section-tag lime">Foundation API</span>
+                  <h3 className="view-title" style={{ fontSize: 18 }}>Connect a matching foundation reference</h3>
+                  <button className="section-action" type="button" onClick={() => setCurrentView("foundations")}>Open Foundation Page</button>
+                </div>
+                <div className="foundation-ref-grid">
+                  {foundationPageChoices.slice(0, 8).map((choice) => {
+                    const isActive = selectedFoundationChoiceId === choice.id;
+                    return (
+                      <button
+                        key={choice.id}
+                        type="button"
+                        className={`foundation-ref-card ${isActive ? "active" : ""}`}
+                        onClick={() => chooseFoundationReference(choice)}
+                      >
+                        <div className="foundation-ref-top">
+                          <span>{choice.brand || "Brand"}</span>
+                          <span>{choice.shade_code || "Shade"}</span>
+                        </div>
+                        <div className="foundation-ref-name">{choice.shade_name || "Unnamed shade"}</div>
+                        <div className="foundation-ref-meta">{choice.undertone || "Undertone n/a"} · {choice.client_name || "Client n/a"}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{ marginTop: 10, fontSize: 10, color: "var(--text-faint)", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                  Foundation match: {lookForm.skin_tone_match || "Not selected"}
+                </div>
+              </div>
+
+              <div className="login-actions" style={{ marginTop: 18 }}>
+                <button className="login-button" type="submit">Create Look</button>
+                <button className="login-button secondary" type="button" onClick={handleOpenLookMorgueConnector}>Go to Morgue Connector</button>
+              </div>
+            </form>
+
+            <div className="view-list" style={{ marginTop: 18 }}>
+              {looks.slice(0, 8).map((lk) => (
+                <div key={lk.id} className="view-list-item" onClick={() => openDetail("Look", lk)} style={{ cursor: "pointer" }}>
+                  <div className="view-list-left">
+                    <div className="view-list-title">{lk.name}</div>
+                    <div className="view-list-meta">{lk.cat}</div>
+                  </div>
+                  <button type="button" className="row-upload-btn" onClick={(e) => { e.stopPropagation(); openLookImagePicker(lk.id); }}>
+                    Upload
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {currentView !== "login" && currentView === "look-morgue-connector" && (
+        <div className="view-modal">
+          <div className="view-content">
+            <div className="view-header">
+              <h2 className="view-title">Look Morgue Connector</h2>
+              <button className="view-close" onClick={() => setCurrentView("new-look")}>✕</button>
+            </div>
+
+            <div className="connector-panel">
+              <div className="connector-card">
+                <div className="connector-kicker">Step 1</div>
+                <h3>Build the look</h3>
+                <p>Use the new look form to choose themes, tone match, and difficulty before saving it to the vault.</p>
+                <button className="login-button" type="button" onClick={() => setCurrentView("new-look")}>Back to New Look</button>
+              </div>
+              <div className="connector-card accent">
+                <div className="connector-kicker">Step 2</div>
+                <h3>Open the look morgue</h3>
+                <p>Jump into the Look Morgue reference wall for inspiration, lookbook browsing, and visual matching.</p>
+                <button className="login-button" type="button" onClick={handleOpenLookMorgue}>Go to Look Morgue</button>
+              </div>
+              <div className="connector-card">
+                <div className="connector-kicker">Step 3</div>
+                <h3>Foundation API</h3>
+                <p>Match the look to a foundation reference pulled directly from the live foundation-shades endpoint.</p>
+                <button className="login-button secondary" type="button" onClick={() => setCurrentView("foundations")}>Open Foundation Page</button>
+              </div>
+            </div>
+
+            <div className="view-list" style={{ marginTop: 18 }}>
+              {looks.slice(0, 4).map((lk) => (
+                <div key={lk.id} className="view-list-item" onClick={() => openDetail("Look", lk)} style={{ cursor: "pointer" }}>
+                  <div className="view-list-left">
+                    <div className="view-list-title">{lk.name}</div>
+                    <div className="view-list-meta">{parseThemeList(lk.cat).join(" · ") || lk.cat}</div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -3142,19 +3814,93 @@ function MuaVault() {
         <div className="view-modal">
           <div className="view-content">
             <div className="view-header">
-              <h2 className="view-title">Schedule</h2>
+              <h2 className="view-title">Appointment Calendar</h2>
               <button className="view-close" onClick={() => setCurrentView("dashboard")}>✕</button>
             </div>
-            <div className="view-list">
-              {appts.map((a, i) => (
-                <div key={i} className="view-list-item" onClick={() => openDetail("Appointment", a)}>
-                  <div className="view-list-left">
-                    <div className="view-list-title">{a.name}</div>
-                    <div className="view-list-meta">{a.h} {a.p} · {a.type}</div>
+            <div style={{ padding: "16px" }}>
+              {/* Calendar Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                <button className="login-button secondary" onClick={handlePrevMonth}>← Prev</button>
+                <h3 style={{ fontSize: "16px", margin: 0 }}>
+                  {calendarMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                </h3>
+                <button className="login-button secondary" onClick={handleNextMonth}>Next →</button>
+              </div>
+
+              {/* Day Headers */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px", marginBottom: "8px" }}>
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  <div key={day} style={{ textAlign: "center", fontWeight: "bold", color: "var(--teal)", fontSize: "12px", padding: "4px" }}>
+                    {day}
                   </div>
-                  <span className="view-list-status">{a.s.replace("s-", "").toUpperCase()}</span>
+                ))}
+              </div>
+
+              {/* Calendar Grid */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px" }}>
+                {Array.from({ length: getFirstDayOfMonth(calendarMonth) }).map((_, i) => (
+                  <div key={`empty-${i}`} style={{ aspectRatio: "1", background: "var(--bg-3)", borderRadius: "4px" }} />
+                ))}
+                {Array.from({ length: getDaysInMonth(calendarMonth) }).map((_, i) => {
+                  const date = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), i + 1);
+                  const dateStr = date.toISOString().split('T')[0];
+                  const appts = getCalendarAppointments()[dateStr] || [];
+                  const isToday = new Date().toISOString().split('T')[0] === dateStr;
+                  
+                  return (
+                    <div
+                      key={i + 1}
+                      style={{
+                        aspectRatio: "1",
+                        border: isToday ? "2px solid var(--pink)" : "1px solid var(--border)",
+                        borderRadius: "4px",
+                        background: appts.length > 0 ? "var(--teal-faint)" : "var(--bg-3)",
+                        padding: "4px",
+                        display: "flex",
+                        flexDirection: "column",
+                        fontSize: "10px",
+                        cursor: "pointer",
+                        overflow: "hidden",
+                        transition: "all 0.2s"
+                      }}
+                    >
+                      <div style={{ fontWeight: "bold", color: isToday ? "var(--pink)" : "var(--text)", marginBottom: "2px" }}>
+                        {i + 1}
+                      </div>
+                      <div style={{ fontSize: "8px", color: "var(--text-dim)", overflow: "hidden" }}>
+                        {appts.length > 0 && (
+                          <>
+                            <div style={{ color: "var(--teal)" }}>{appts.length} appt{appts.length > 1 ? 's' : ''}</div>
+                            {appts.slice(0, 2).map((a, idx) => (
+                              <div key={idx} onClick={() => openDetail("Appointment", a)} style={{ color: "var(--lime-bright)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {a.client_name?.split(' ')[0] || `#${a.id}`}
+                              </div>
+                            ))}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Appointments List */}
+              <div style={{ marginTop: "24px" }}>
+                <h3 style={{ fontSize: "14px", marginBottom: "12px", color: "var(--teal)" }}>
+                  Appointments ({appointmentsData.length})
+                </h3>
+                <div className="view-list">
+                  {appointmentsData.slice(0, 10).map((a) => (
+                    <div key={a.id} className="view-list-item" onClick={() => openDetail("Appointment", a)}>
+                      <div className="view-list-left">
+                        <div className="view-list-title">{a.client_name || `Client ${a.client_id}`}</div>
+                        <div className="view-list-meta">{a.appointment_date} · {a.start_time} · {a.event_type}</div>
+                      </div>
+                      <span className="view-list-status">{a.status || "Booked"}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
@@ -3167,15 +3913,151 @@ function MuaVault() {
               <h2 className="view-title">Client Roster</h2>
               <button className="view-close" onClick={() => setCurrentView("dashboard")}>✕</button>
             </div>
-            <div className="view-list">
-              {clients.map((c, i) => (
-                <div key={i} className="view-list-item" onClick={() => openDetail("Client", c)}>
-                  <div className="view-list-left">
-                    <div className="view-list-title">{c.name}</div>
-                    <div className="view-list-meta">{c.meta} · {c.tone}</div>
-                  </div>
+
+            {/* Client Log Section */}
+            {clientLog.length > 0 && (
+              <div style={{ marginBottom: "16px", padding: "12px", background: "var(--bg-3)", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                <div style={{ fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--teal)", marginBottom: "8px" }}>
+                  Recently Added Clients
                 </div>
-              ))}
+                {clientLog.slice(0, 5).map((entry) => (
+                  <div
+                    key={entry.id}
+                    style={{
+                      padding: "6px 8px",
+                      background: "var(--bg)",
+                      borderRadius: "4px",
+                      marginBottom: "4px",
+                      fontSize: "11px",
+                      color: "var(--text-dim)",
+                      borderLeft: "2px solid var(--lime)"
+                    }}
+                  >
+                    <div style={{ color: "var(--text)" }}>{entry.name}</div>
+                    <div style={{ fontSize: "9px" }}>{new Date(entry.timestamp).toLocaleDateString()}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="view-list">
+              {clientsData && clientsData.length > 0 ? (
+                clientsData.map((c) => (
+                  <div
+                    key={c.id}
+                    className="view-list-item"
+                    onClick={() => handleClientProfile(c.id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className="view-list-left">
+                      <div className="view-list-title">{c.full_name}</div>
+                      <div className="view-list-meta">{c.email || c.phone || 'No contact'} · {c.skin_tone || 'N/A'}</div>
+                    </div>
+                    <button type="button" className="row-upload-btn" onClick={(e) => { e.stopPropagation(); deleteClient(c.id, c.full_name); }}>
+                      Delete
+                    </button>
+                    <button type="button" className="row-upload-btn" onClick={(e) => { e.stopPropagation(); handleClientProfile(c.id); }}>
+                      View Profile →
+                    </button>
+                  </div>
+                ))
+              ) : (
+                clients.map((c, i) => (
+                  <div
+                    key={i}
+                    className="view-list-item"
+                    onClick={() => handleClientProfile(c.id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className="view-list-left">
+                      <div className="view-list-title">{c.name}</div>
+                      <div className="view-list-meta">{c.meta} · {c.tone}</div>
+                    </div>
+                    <button type="button" className="row-upload-btn" onClick={(e) => { e.stopPropagation(); deleteClient(c.id, c.name); }}>
+                      Delete
+                    </button>
+                    <button type="button" className="row-upload-btn" onClick={(e) => { e.stopPropagation(); handleClientProfile(c.id); }}>
+                      View Profile →
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {currentView !== "login" && currentView === "client-profile" && selectedClientData && (
+        <div className="view-modal">
+          <div className="view-content">
+            <div className="view-header">
+              <h2 className="view-title">{selectedClientData.full_name || "Client Profile"}</h2>
+              <button className="view-close" onClick={() => { setCurrentView("all-clients"); setSelectedClientData(null); }}>✕</button>
+            </div>
+
+            <div style={{ padding: "16px" }}>
+              {/* Client Details */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "24px" }}>
+                <div style={{ background: "var(--bg-3)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: "9px", color: "var(--text-faint)", textTransform: "uppercase", marginBottom: "4px" }}>Email</div>
+                  <div style={{ fontSize: "12px", color: "var(--text)" }}>{selectedClientData.email || "N/A"}</div>
+                </div>
+                <div style={{ background: "var(--bg-3)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: "9px", color: "var(--text-faint)", textTransform: "uppercase", marginBottom: "4px" }}>Phone</div>
+                  <div style={{ fontSize: "12px", color: "var(--text)" }}>{selectedClientData.phone || "N/A"}</div>
+                </div>
+                <div style={{ background: "var(--bg-3)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: "9px", color: "var(--text-faint)", textTransform: "uppercase", marginBottom: "4px" }}>Skin Tone</div>
+                  <div style={{ fontSize: "12px", color: "var(--text)" }}>{selectedClientData.skin_tone || "N/A"}</div>
+                </div>
+                <div style={{ background: "var(--bg-3)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: "9px", color: "var(--text-faint)", textTransform: "uppercase", marginBottom: "4px" }}>Undertone</div>
+                  <div style={{ fontSize: "12px", color: "var(--text)" }}>{selectedClientData.undertone || "N/A"}</div>
+                </div>
+                <div style={{ background: "var(--bg-3)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: "9px", color: "var(--text-faint)", textTransform: "uppercase", marginBottom: "4px" }}>Skin Type</div>
+                  <div style={{ fontSize: "12px", color: "var(--text)" }}>{selectedClientData.skin_type || "N/A"}</div>
+                </div>
+                <div style={{ background: "var(--bg-3)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: "9px", color: "var(--text-faint)", textTransform: "uppercase", marginBottom: "4px" }}>Instagram</div>
+                  <div style={{ fontSize: "12px", color: "var(--text)" }}>{selectedClientData.instagram_handle || "N/A"}</div>
+                </div>
+              </div>
+
+              {/* Notes */}
+              {selectedClientData.notes && (
+                <div style={{ background: "var(--bg-3)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)", marginBottom: "24px" }}>
+                  <div style={{ fontSize: "9px", color: "var(--text-faint)", textTransform: "uppercase", marginBottom: "8px" }}>Notes</div>
+                  <div style={{ fontSize: "12px", color: "var(--text)", lineHeight: "1.4" }}>{selectedClientData.notes}</div>
+                </div>
+              )}
+
+              {/* Appointment History */}
+              <div>
+                <h3 style={{ fontSize: "14px", color: "var(--teal)", marginBottom: "12px" }}>Appointment History</h3>
+                {selectedClientData.appointment_history && selectedClientData.appointment_history.length > 0 ? (
+                  <div className="view-list">
+                    {selectedClientData.appointment_history.map((h) => (
+                      <div key={h.id} style={{ padding: "8px", background: "var(--bg-3)", borderRadius: "4px", marginBottom: "6px", border: "1px solid var(--border)" }}>
+                        <div style={{ fontSize: "11px", color: "var(--text)" }}>{h.date}</div>
+                        <div style={{ fontSize: "10px", color: "var(--text-dim)" }}>{h.event_type || h.look_name || "Service"}</div>
+                        {h.client_feedback && <div style={{ fontSize: "9px", color: "var(--lime)", marginTop: "4px" }}>{h.client_feedback}</div>}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: "11px", color: "var(--text-faint)", padding: "12px", background: "var(--bg-3)", borderRadius: "4px" }}>
+                    No appointment history found
+                  </div>
+                )}
+              </div>
+
+              <button className="login-button" onClick={() => setCurrentView("all-clients")} style={{ marginTop: "16px", width: "100%" }}>
+                Back to Roster
+              </button>
+              <button className="login-button secondary" onClick={() => deleteClient(selectedClientData.id, selectedClientData.full_name)} style={{ marginTop: "10px", width: "100%" }}>
+                Delete Client
+              </button>
             </div>
           </div>
         </div>
@@ -3210,15 +4092,20 @@ function MuaVault() {
             </form>
             {renderEntityTypeLibrary("appointments", "Appointments Library")}
             <div className="view-list" style={{ marginTop: 16 }}>
-              {appointmentsData.slice(0, 12).map((a) => (
+              {appointmentsData.slice(0, 12).map((a) => {
+                const images = getEntityImages("appointments", a.id);
+                const photoUrl = images.length > 0 ? images[0].storage_url : noImagePlaceholder();
+                return (
                 <div key={a.id} className="view-list-item">
+                  <div className="row-thumb" style={{ backgroundImage: `url(${photoUrl})` }} onClick={() => openImagePreview(photoUrl, a.client_name || "Appointment photo")} />
                   <div className="view-list-left">
                     <div className="view-list-title">{a.client_name || `Client ${a.client_id}`}</div>
                     <div className="view-list-meta">{a.appointment_date} · {a.start_time} · {a.event_type}</div>
                   </div>
                   <button className="row-upload-btn" type="button" onClick={() => openSectionImagePicker({ entityType: "appointments", entityId: a.id, fieldName: "reference_photo", label: a.client_name || "appointment" })}>Upload</button>
                 </div>
-              ))}
+              );
+              })}
             </div>
           </div>
         </div>
@@ -3232,14 +4119,37 @@ function MuaVault() {
               <label className="entity-label">Email<input className="entity-input" type="email" value={clientForm.email} onChange={(e) => setClientForm((v) => ({ ...v, email: e.target.value }))} /></label>
               <label className="entity-label">Phone<input className="entity-input" value={clientForm.phone} onChange={(e) => setClientForm((v) => ({ ...v, phone: e.target.value }))} /></label>
               <label className="entity-label">Instagram<input className="entity-input" value={clientForm.instagram_handle} onChange={(e) => setClientForm((v) => ({ ...v, instagram_handle: e.target.value }))} /></label>
-              <label className="entity-label">Skin Tone<input className="entity-input" value={clientForm.skin_tone} onChange={(e) => setClientForm((v) => ({ ...v, skin_tone: e.target.value }))} /></label>
-              <label className="entity-label">Undertone<input className="entity-input" value={clientForm.undertone} onChange={(e) => setClientForm((v) => ({ ...v, undertone: e.target.value }))} /></label>
+              <label className="entity-label">Skin Tone
+                <select className="entity-input" value={clientForm.skin_tone} onChange={(e) => setClientForm((v) => ({ ...v, skin_tone: e.target.value }))}>
+                  <option value="">-- Select Tone --</option>
+                  {SKIN_TONES.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </label>
+              <label className="entity-label">Undertone
+                <select className="entity-input" value={clientForm.undertone} onChange={(e) => setClientForm((v) => ({ ...v, undertone: e.target.value }))}>
+                  <option value="">-- Select Undertone --</option>
+                  {UNDERTONES.map((u) => <option key={u} value={u}>{u}</option>)}
+                </select>
+              </label>
             </div>
             <label className="entity-label">Notes<textarea className="entity-input entity-textarea" value={clientForm.notes} onChange={(e) => setClientForm((v) => ({ ...v, notes: e.target.value }))} /></label>
             <button className="login-button" type="submit">Create Client</button>
           </form>
           {renderEntityTypeLibrary("clients", "Clients Library")}
-          <div className="view-list" style={{ marginTop: 16 }}>{clientsData.slice(0, 12).map((c) => (<div key={c.id} className="view-list-item"><div className="view-list-left"><div className="view-list-title">{c.full_name}</div><div className="view-list-meta">{c.email || "No email"} · {c.skin_tone || "Tone n/a"}</div></div><button className="row-upload-btn" type="button" onClick={() => openSectionImagePicker({ entityType: "clients", entityId: c.id, fieldName: "photo_url", label: c.full_name })}>Upload</button></div>))}</div>
+          <div className="view-list" style={{ marginTop: 16 }}>{clientsData.slice(0, 12).map((c) => {
+            const images = getEntityImages("clients", c.id);
+            const photoUrl = images.length > 0 ? images[0].storage_url : noImagePlaceholder();
+            return (
+              <div key={c.id} className="view-list-item">
+                <div className="row-thumb" style={{ backgroundImage: `url(${photoUrl})` }} onClick={() => openImagePreview(photoUrl, c.full_name || "Client photo")} />
+                <div className="view-list-left">
+                  <div className="view-list-title">{c.full_name}</div>
+                  <div className="view-list-meta">{c.email || "No email"} · {c.skin_tone || "Tone n/a"}</div>
+                </div>
+                <button className="row-upload-btn" type="button" onClick={() => openSectionImagePicker({ entityType: "clients", entityId: c.id, fieldName: "photo_url", label: c.full_name })}>Upload Picture</button>
+              </div>
+            );
+          })}</div>
         </div></div>
       )}
 
@@ -3264,7 +4174,7 @@ function MuaVault() {
 
       {currentView !== "login" && currentView === "upload-center" && (
         <div className="view-modal"><div className="view-content"><div className="view-header"><h2 className="view-title">Upload Center</h2><button className="view-close" onClick={() => setCurrentView("dashboard")}>✕</button></div>
-          <div className="upload-actions"><button className="upload-btn" onClick={openPicker}>Select Files</button><button className="upload-btn" style={{ marginLeft: 8 }} onClick={handleUpload} disabled={!selectedFiles.length}>Upload Files ↑</button><button className="upload-btn" style={{ marginLeft: 8 }} onClick={() => setCurrentView("uploads-dashboard")}>Section Dashboard →</button></div>
+          <div className="upload-actions"><button className="upload-btn" type="button" onClick={openPicker}>Select Files</button><button className="upload-btn" type="button" style={{ marginLeft: 8 }} onClick={handleUpload} disabled={!selectedFiles.length}>Upload Files ↑</button><button className="upload-btn" type="button" style={{ marginLeft: 8 }} onClick={() => setCurrentView("uploads-dashboard")}>Section Dashboard →</button></div>
           <div className="view-list" style={{ marginTop: 16 }}>{(selectedFiles.length ? selectedFiles : uploadRows).map((u, i) => (<div key={`${u.name}-${i}`} className="view-list-item"><div className="view-list-left"><div className="view-list-title">{u.name}</div><div className="view-list-meta">{u.meta}</div></div><span className="view-list-status">{u.status || "Ready"}</span></div>))}</div>
         </div></div>
       )}
@@ -3341,53 +4251,166 @@ function MuaVault() {
       )}
 
       {currentView !== "login" && currentView === "add-product" && (
-        <div className="view-modal"><div className="view-content"><div className="view-header"><h2 className="view-title">Product Center</h2><button className="view-close" onClick={() => setCurrentView("dashboard")}>✕</button></div>
-          <form className="entity-form" onSubmit={submitProductForm}><div className="entity-grid"><label className="entity-label">Name<input className="entity-input" required value={productForm.name} onChange={(e) => setProductForm((v) => ({ ...v, name: e.target.value }))} /></label><label className="entity-label">Brand<input className="entity-input" required value={productForm.brand} onChange={(e) => setProductForm((v) => ({ ...v, brand: e.target.value }))} /></label><label className="entity-label">Category<select className="entity-input" value={productForm.category} onChange={(e) => setProductForm((v) => ({ ...v, category: e.target.value }))}>{PRODUCT_CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select></label><label className="entity-label">Shade<input className="entity-input" value={productForm.shade} onChange={(e) => setProductForm((v) => ({ ...v, shade: e.target.value }))} /></label></div><button className="login-button" type="submit">Create Product</button></form>
-          <div className="view-list" style={{ marginTop: 16 }}>{productsData.slice(0, 12).map((p) => (<div key={p.id} className="view-list-item"><div className="view-list-left"><div className="view-list-title">{p.name}</div><div className="view-list-meta">{p.brand} · {p.category}</div></div></div>))}</div>
-          <div style={{ marginTop: 20 }}>
-            <div className="section-head" style={{ marginBottom: 12 }}>
-              <span className="section-tag lime">Choices</span>
-              <h3 className="view-title" style={{ fontSize: 18 }}>Foundation Choices</h3>
-              <button className="section-action" type="button" onClick={() => setCurrentView("foundations")}>Open Page -&gt;</button>
+        <div className="view-modal">
+          <div className="view-content">
+            <div className="view-header">
+              <h2 className="view-title">Product Center</h2>
+              <button className="view-close" onClick={() => setCurrentView("dashboard")}>✕</button>
             </div>
-            <div className="view-grid">
-              {foundationPageChoices.slice(0, 6).map((shade) => (
-                <div key={shade.id} className="view-item">
-                  <div className="view-thumb swatch-2" style={{
-                    backgroundImage: shade.shade_code ? undefined : undefined,
-                    background: shade.undertone === "Warm" ? "linear-gradient(135deg, #f6c177, #b66b32)" : shade.undertone === "Cool" ? "linear-gradient(135deg, #9dd9d2, #4d8f8b)" : shade.undertone === "Olive" ? "linear-gradient(135deg, #a5b67d, #58694a)" : "linear-gradient(135deg, #eed7c5, #8b5f4b)",
-                  }} />
-                  <div className="view-item-title">{shade.brand} · {shade.shade_name}</div>
-                  <div className="view-item-meta">{shade.client_name || "Client"} · {shade.undertone || "Undertone n/a"}</div>
-                  <button className="panel-link" style={{ marginTop: 8 }} onClick={() => setCurrentView("foundations")}>View Choices -&gt;</button>
+
+            <form className="entity-form" onSubmit={submitProductForm}>
+              <div className="entity-grid">
+                <label className="entity-label">Name
+                  <input className="entity-input" required value={productForm.name} onChange={(e) => setProductForm((v) => ({ ...v, name: e.target.value }))} />
+                </label>
+                <label className="entity-label">Brand
+                  <input className="entity-input" required value={productForm.brand} onChange={(e) => setProductForm((v) => ({ ...v, brand: e.target.value }))} />
+                </label>
+                <label className="entity-label">Category
+                  <select className="entity-input" value={productForm.category} onChange={(e) => setProductForm((v) => ({ ...v, category: e.target.value }))}>
+                    {PRODUCT_CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+                  </select>
+                </label>
+                <label className="entity-label">Shade
+                  <input className="entity-input" value={productForm.shade} onChange={(e) => setProductForm((v) => ({ ...v, shade: e.target.value }))} />
+                </label>
+              </div>
+              <button className="login-button" type="submit">Create Product</button>
+            </form>
+
+            <div className="view-list" style={{ marginTop: 16 }}>
+              {productsData.slice(0, 12).map((p) => (
+                <div key={p.id} className="view-list-item">
+                  <div
+                    className="row-thumb"
+                    style={{
+                      backgroundImage: `url(${(getEntityImages("products", p.id)[0]?.storage_url) || noImagePlaceholder()})`,
+                    }}
+                    onClick={() => {
+                      const preview = (getEntityImages("products", p.id)[0]?.storage_url) || noImagePlaceholder();
+                      openImagePreview(preview, p.name || "Product image");
+                    }}
+                  />
+                  <div className="view-list-left">
+                    <div className="view-list-title">{p.name}</div>
+                    <div className="view-list-meta">{p.brand} · {p.category}</div>
+                  </div>
+                  <button
+                    className="row-upload-btn"
+                    type="button"
+                    onClick={() => openSectionImagePicker({ entityType: "products", entityId: p.id, fieldName: "product_image", label: p.name || "product" })}
+                  >
+                    Upload
+                  </button>
                 </div>
               ))}
             </div>
+
+            <div style={{ marginTop: 20 }}>
+              <div className="section-head" style={{ marginBottom: 12 }}>
+                <span className="section-tag lime">API Connect</span>
+                <h3 className="view-title" style={{ fontSize: 18 }}>Foundation API Choices</h3>
+                <button className="section-action" type="button" onClick={() => setCurrentView("foundations")}>Open Page -&gt;</button>
+              </div>
+              <div className="view-grid">
+                {foundationPageChoices.slice(0, 6).map((shade) => (
+                  <div key={shade.id} className="view-item">
+                    <div className="view-thumb swatch-2" style={{
+                      background: shade.undertone === "Warm" ? "linear-gradient(135deg, #f6c177, #b66b32)" : shade.undertone === "Cool" ? "linear-gradient(135deg, #9dd9d2, #4d8f8b)" : shade.undertone === "Olive" ? "linear-gradient(135deg, #a5b67d, #58694a)" : "linear-gradient(135deg, #eed7c5, #8b5f4b)",
+                    }} />
+                    <div className="view-item-title">{shade.brand} · {shade.shade_name}</div>
+                    <div className="view-item-meta">{shade.client_name || "Client"} · {shade.undertone || "Undertone n/a"}</div>
+                    <button
+                      className="panel-link"
+                      style={{ marginTop: 8 }}
+                      type="button"
+                      onClick={() => applyApiProductToForm({
+                        name: `${shade.brand} ${shade.shade_name}`,
+                        brand: shade.brand,
+                        category: "Foundation",
+                        shade: shade.shade_name,
+                      }, "Foundation")}
+                    >
+                      Use In Form -&gt;
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ marginTop: 16 }}>
+              <h3 className="view-title" style={{ fontSize: 18 }}>External Makeup API Feed</h3>
+              <div className="view-grid" style={{ marginTop: 10 }}>
+                {externalApiProducts.slice(0, 6).map((item, idx) => {
+                  const imageUrl = item.image_link || item.api_featured_image || "";
+                  const resolvedImageUrl = imageUrl ? (imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl) : noImagePlaceholder();
+                  return (
+                    <div key={`${item.id || idx}-${item.name || "api-product"}`} className="view-item">
+                      <div className="view-thumb" style={{ backgroundImage: `url(${resolvedImageUrl})` }} onClick={(event) => { event.stopPropagation(); openImagePreview(resolvedImageUrl, item.name || "Product"); }} />
+                      <div className="view-item-title">{item.name || "Unnamed product"}</div>
+                      <div className="view-item-meta">{item.brand || "Unknown brand"} · {item.product_type || "product"}</div>
+                      <button className="panel-link" type="button" style={{ marginTop: 8 }} onClick={() => applyApiProductToForm(item, item.product_type || "Foundation")}>Use In Form -&gt;</button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div style={{ marginTop: 16 }}>
+              <h3 className="view-title" style={{ fontSize: 18 }}>External Foundation API Feed</h3>
+              <div className="view-grid" style={{ marginTop: 10 }}>
+                {externalFoundations.slice(0, 6).map((item, idx) => {
+                  const imageUrl = item.image_link || item.api_featured_image || "";
+                  const resolvedImageUrl = imageUrl ? (imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl) : noImagePlaceholder();
+                  return (
+                    <div key={`${item.id || idx}-${item.name || "foundation"}`} className="view-item">
+                      <div className="view-thumb" style={{ backgroundImage: `url(${resolvedImageUrl})` }} onClick={(event) => { event.stopPropagation(); openImagePreview(resolvedImageUrl, item.name || "Foundation"); }} />
+                      <div className="view-item-title">{item.name || "Unnamed foundation"}</div>
+                      <div className="view-item-meta">{item.brand || "Unknown brand"} · {item.price_sign || "$"}{item.price || "n/a"}</div>
+                      <button className="panel-link" type="button" style={{ marginTop: 8 }} onClick={() => applyApiProductToForm(item, "Foundation")}>Use In Form -&gt;</button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             <div style={{ marginTop: 16 }}>
               <h3 className="view-title" style={{ fontSize: 18 }}>External Lipstick API Feed</h3>
               <div className="view-grid" style={{ marginTop: 10 }}>
                 {externalLipsticks.slice(0, 6).map((item, idx) => {
                   const imageUrl = item.image_link || item.api_featured_image || "";
-                  const resolvedImageUrl = imageUrl ? (imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl) : placeholderImage(`lip-${item.id || idx}-${item.name || "item"}`);
+                  const resolvedImageUrl = imageUrl ? (imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl) : noImagePlaceholder();
                   return (
                     <div key={`${item.id || idx}-${item.name || "lip"}`} className="view-item">
-                      <div
-                        className="view-thumb"
-                        style={{ backgroundImage: `url(${resolvedImageUrl})` }}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          openImagePreview(resolvedImageUrl, item.name || "Lipstick");
-                        }}
-                      />
+                      <div className="view-thumb" style={{ backgroundImage: `url(${resolvedImageUrl})` }} onClick={(event) => { event.stopPropagation(); openImagePreview(resolvedImageUrl, item.name || "Lipstick"); }} />
                       <div className="view-item-title">{item.name || "Unnamed lipstick"}</div>
                       <div className="view-item-meta">{item.brand || "Unknown brand"} · {item.price_sign || "$"}{item.price || "n/a"}</div>
+                      <button className="panel-link" type="button" style={{ marginTop: 8 }} onClick={() => applyApiProductToForm(item, "Lipstick")}>Use In Form -&gt;</button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div style={{ marginTop: 16 }}>
+              <h3 className="view-title" style={{ fontSize: 18 }}>External Eyeshadow API Feed</h3>
+              <div className="view-grid" style={{ marginTop: 10 }}>
+                {externalEyeshadows.slice(0, 6).map((item, idx) => {
+                  const imageUrl = item.image_link || item.api_featured_image || "";
+                  const resolvedImageUrl = imageUrl ? (imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl) : noImagePlaceholder();
+                  return (
+                    <div key={`${item.id || idx}-${item.name || "eye"}`} className="view-item">
+                      <div className="view-thumb" style={{ backgroundImage: `url(${resolvedImageUrl})` }} onClick={(event) => { event.stopPropagation(); openImagePreview(resolvedImageUrl, item.name || "Eyeshadow"); }} />
+                      <div className="view-item-title">{item.name || "Unnamed eyeshadow"}</div>
+                      <div className="view-item-meta">{item.brand || "Unknown brand"} · {item.price_sign || "$"}{item.price || "n/a"}</div>
+                      <button className="panel-link" type="button" style={{ marginTop: 8 }} onClick={() => applyApiProductToForm(item, "Eyeshadow")}>Use In Form -&gt;</button>
                     </div>
                   );
                 })}
               </div>
             </div>
           </div>
-        </div></div>
+        </div>
       )}
 
       {currentView !== "login" && currentView === "foundations" && (
@@ -3441,7 +4464,7 @@ function MuaVault() {
               <div className="view-grid">
                 {externalLipsticks.slice(0, 12).map((item, idx) => {
                   const imageUrl = item.image_link || item.api_featured_image || "";
-                  const resolvedImageUrl = imageUrl ? (imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl) : placeholderImage(`lip-${item.id || idx}-${item.name || "item"}`);
+                  const resolvedImageUrl = imageUrl ? (imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl) : noImagePlaceholder();
                   return (
                     <div key={`${item.id || idx}-${item.name || "lip"}`} className="view-item">
                       <div className="view-thumb" style={{ backgroundImage: `url(${resolvedImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }} onClick={(event) => { event.stopPropagation(); openImagePreview(resolvedImageUrl, item.name || "Lipstick"); }} />
@@ -3537,11 +4560,12 @@ function MuaVault() {
           </header>
 
           <div className="page">
-            <div className="morgue-hero f0">
+            <div className="morgue-hero f0" id="look-morgue-anchor">
               <div className="section-head">
                 <span className="section-tag">✦ Look Morgue</span>
                 <h2 className="section-title">THE VAULT</h2>
                 <button className="section-action" onClick={handleBrowseAll}>Browse All -&gt;</button>
+                  <button className="section-action" type="button" onClick={handleCreateLook}>New Look -&gt;</button>
               </div>
 
               <div className="morgue-filter-row">
@@ -3549,16 +4573,44 @@ function MuaVault() {
                   <button
                     key={f}
                     className={`filter-pill ${activeFilter === f ? "active" : ""}`}
-                    onClick={() => {
+                      type="button"
+                      onClick={() => {
                       setActiveFilter(f);
                       if (f === "Runway") {
+                          setFilmMenuOpen(false);
+                        setBridalMenuOpen(false);
+                        setEditorialMenuOpen(false);
                         setCurrentView("runway-looks");
                         return;
                       }
                       if (f === "FX") {
+                          setFilmMenuOpen(false);
+                        setBridalMenuOpen(false);
+                        setEditorialMenuOpen(false);
                         setCurrentView("fx-looks");
                         return;
                       }
+                        if (f === "Film") {
+                        setBridalMenuOpen(false);
+                        setEditorialMenuOpen(false);
+                          setFilmMenuOpen((value) => !value);
+                          return;
+                        }
+                      if (f === "Bridal") {
+                        setFilmMenuOpen(false);
+                        setEditorialMenuOpen(false);
+                        setBridalMenuOpen((value) => !value);
+                        return;
+                      }
+                      if (f === "Editorial") {
+                        setFilmMenuOpen(false);
+                        setBridalMenuOpen(false);
+                        setEditorialMenuOpen((value) => !value);
+                        return;
+                      }
+                        setFilmMenuOpen(false);
+                      setBridalMenuOpen(false);
+                      setEditorialMenuOpen(false);
                       if (currentView === "runway-looks" || currentView === "fx-looks") {
                         setCurrentView("dashboard");
                       }
@@ -3568,6 +4620,34 @@ function MuaVault() {
                   </button>
                 ))}
               </div>
+
+              {filmMenuOpen && activeFilter === "Film" && (
+                <div className="film-submenu">
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("production-center")}>Production</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("call-sheets")}>Call Sheet</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("fx-makeup")}>FX</button>
+                </div>
+              )}
+
+              {bridalMenuOpen && activeFilter === "Bridal" && (
+                <div className="film-submenu bridal-submenu">
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("new-appointment")}>New Appt</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("new-look")}>New Look</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("add-client")}>Add Clients</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("upload-center")}>Upload</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("add-product")}>Add Products</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("history-tracker")}>Client History</button>
+                </div>
+              )}
+
+              {editorialMenuOpen && activeFilter === "Editorial" && (
+                <div className="film-submenu bridal-submenu">
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("new-look")}>New Look</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("new-appointment")}>New Appt</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("add-client")}>Add Client</button>
+                  <button type="button" className="film-submenu-btn" onClick={() => setCurrentView("add-product")}>Add Products</button>
+                </div>
+              )}
 
               <div className="morgue-grid">
                 {looks.slice(0, 5).map((lk, i) => (
@@ -3591,15 +4671,18 @@ function MuaVault() {
                       </svg>
                     </div>
                     <div className="morgue-overlay">
-                      <div className="morgue-look-cat">{lk.cat}</div>
+                      <div className="morgue-look-cat">{parseThemeList(lk.cat).join(" · ") || lk.cat}</div>
                       <div className="morgue-look-name">{lk.name}</div>
                       <div className="morgue-tags">
-                        {lk.tags.map((t, j) => (
+                        {lk.tags.slice(0, 3).map((t, j) => (
                           <span key={j} className={`morgue-tag ${j === 0 ? "tag-teal" : j === 1 ? "tag-pink" : "tag-lime"}`}>
                             {t}
                           </span>
                         ))}
                       </div>
+                      <button className="panel-link" style={{ marginTop: 8 }} onClick={(event) => { event.stopPropagation(); handleOpenLookMorgueConnector(); }}>
+                        Open Connector -&gt;
+                      </button>
                       <button className="panel-link" style={{ marginTop: 8 }} onClick={(event) => { event.stopPropagation(); openLookImagePicker(lk.id); }}>
                         Upload Picture -&gt;
                       </button>
@@ -3668,7 +4751,7 @@ function MuaVault() {
               </div>
               <div className="upload-body">
                 <div className="upload-actions">
-                  <button className="upload-btn" onClick={openPicker}>Select Portfolio Files</button>
+                  <button className="upload-btn" type="button" onClick={openPicker}>Select Portfolio Files</button>
                   <button className="upload-btn" style={{ marginLeft: 8 }} onClick={handleUpload} disabled={!selectedFiles.length}>
                     Upload Files ↑
                   </button>

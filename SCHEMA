@@ -105,7 +105,8 @@ CREATE TABLE IF NOT EXISTS products (
     category TEXT NOT NULL CHECK (
         category IN (
             'Foundation', 'Concealer', 'Eyeshadow', 'Lipstick',
-            'Lipgloss', 'Blush', 'Bronzer', 'Highlighter', 'Primer', 'Setting Spray'
+            'Lipgloss', 'Blush', 'Bronzer', 'Highlighter', 'Primer', 'Setting Spray',
+            'Powder', 'Moisturizer'
         )
     ),
     shade TEXT,
@@ -390,6 +391,7 @@ CREATE TABLE IF NOT EXISTS upload_links (
     entity_type TEXT NOT NULL CHECK (
         entity_type IN (
             'clients',
+            'products',
             'appointments',
             'before_after_photos',
             'productions',

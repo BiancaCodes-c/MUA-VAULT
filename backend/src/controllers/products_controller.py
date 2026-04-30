@@ -11,6 +11,106 @@ from src.config.db import get_db
 
 router = APIRouter()
 
+ALLOWED_PRODUCT_CATEGORIES = (
+    "Foundation",
+    "Concealer",
+    "Eyeshadow",
+    "Lipstick",
+    "Lipgloss",
+    "Blush",
+    "Bronzer",
+    "Highlighter",
+    "Primer",
+    "Setting Spray",
+    "Powder",
+    "Moisturizer",
+)
+
+CATEGORY_ALIASES = {
+    "foundation": "Foundation",
+    "foundations": "Foundation",
+    "foundation(api)": "Foundation",
+    "concealer": "Concealer",
+    "concealers": "Concealer",
+    "eyeshadow": "Eyeshadow",
+    "eyeshadows": "Eyeshadow",
+    "lipstick": "Lipstick",
+    "lipsticks": "Lipstick",
+    "lipgloss": "Lipgloss",
+    "lipglosses": "Lipgloss",
+    "powder": "Powder",
+    "powders": "Powder",
+    "moister": "Moisturizer",
+    "moisters": "Moisturizer",
+    "moisturizer": "Moisturizer",
+    "moisturizers": "Moisturizer",
+}
+
+
+def normalize_category(raw_category: str) -> str:
+    key = str(raw_category or "").strip().lower()
+    if not key:
+        return ""
+    if key in CATEGORY_ALIASES:
+        return CATEGORY_ALIASES[key]
+    for category in ALLOWED_PRODUCT_CATEGORIES:
+        if key == category.lower():
+            return category
+    return raw_category.strip()
+
+
+def ensure_products_schema(db):
+    """Expand products category CHECK constraint for newer categories when needed."""
+    row = db.execute(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name='products'"
+    ).fetchone()
+    schema_sql = (row.get("sql") if isinstance(row, dict) else row[0]) if row else ""
+    if schema_sql and "'Powder'" in schema_sql and "'Moisturizer'" in schema_sql:
+        return
+
+    try:
+        db.execute("PRAGMA foreign_keys = OFF")
+        db.execute("BEGIN")
+        db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS products_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                brand TEXT NOT NULL,
+                category TEXT NOT NULL CHECK (
+                    category IN (
+                        'Foundation', 'Concealer', 'Eyeshadow', 'Lipstick',
+                        'Lipgloss', 'Blush', 'Bronzer', 'Highlighter', 'Primer', 'Setting Spray',
+                        'Powder', 'Moisturizer'
+                    )
+                ),
+                shade TEXT,
+                finish TEXT CHECK (finish IN ('Matte', 'Dewy', 'Satin', 'Glossy', 'Shimmer')),
+                suitable_skin_type TEXT,
+                expiration_date DATE,
+                notes TEXT,
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        )
+        db.execute(
+            """
+            INSERT INTO products_new
+            (id, name, brand, category, shade, finish, suitable_skin_type, expiration_date, notes, created_at)
+            SELECT id, name, brand, category, shade, finish, suitable_skin_type, expiration_date, notes, created_at
+            FROM products
+            """
+        )
+        db.execute("DROP TABLE products")
+        db.execute("ALTER TABLE products_new RENAME TO products")
+        db.execute("CREATE INDEX IF NOT EXISTS idx_products_category ON products (category)")
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.execute("PRAGMA foreign_keys = ON")
+
 
 class CreateProductRequest(BaseModel):
     name: str
@@ -63,29 +163,20 @@ def get_product(product_id: int = Path(..., gt=0)):
 def create_product(req: CreateProductRequest):
     db = get_db()
 
+    ensure_products_schema(db)
+
     if not req.name or not req.name.strip():
         raise HTTPException(status_code=400, detail="name is required")
     if not req.brand or not req.brand.strip():
         raise HTTPException(status_code=400, detail="brand is required")
-    if not req.category or not req.category.strip():
+    normalized_category = normalize_category(req.category)
+    if not normalized_category:
         raise HTTPException(status_code=400, detail="category is required")
 
-    valid_categories = (
-        "Foundation",
-        "Concealer",
-        "Eyeshadow",
-        "Lipstick",
-        "Lipgloss",
-        "Blush",
-        "Bronzer",
-        "Highlighter",
-        "Primer",
-        "Setting Spray",
-    )
-    if req.category not in valid_categories:
+    if normalized_category not in ALLOWED_PRODUCT_CATEGORIES:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid category. Must be one of: {', '.join(valid_categories)}",
+            detail=f"Invalid category. Must be one of: {', '.join(ALLOWED_PRODUCT_CATEGORIES)}",
         )
 
     valid_finishes = ("Matte", "Dewy", "Satin", "Glossy", "Shimmer")
@@ -105,7 +196,7 @@ def create_product(req: CreateProductRequest):
             (
                 req.name,
                 req.brand,
-                req.category,
+                normalized_category,
                 req.shade,
                 req.finish,
                 req.suitable_skin_type,
@@ -134,7 +225,23 @@ def create_product(req: CreateProductRequest):
 @router.get("/external/lipsticks")
 def list_external_lipsticks(limit: int = Query(default=20, ge=1, le=100)):
     """Proxy lipstick catalog data from makeup-api for frontend use."""
-    url = "https://makeup-api.herokuapp.com/api/v1/products.json?product_type=lipstick"
+    return _list_external_products("lipstick", "Lipstick", limit)
+
+
+@router.get("/external/foundations")
+def list_external_foundations(limit: int = Query(default=20, ge=1, le=100)):
+    """Proxy foundation catalog data from makeup-api for frontend use."""
+    return _list_external_products("foundation", "Foundation", limit)
+
+
+@router.get("/external/eyeshadows")
+def list_external_eyeshadows(limit: int = Query(default=20, ge=1, le=100)):
+    """Proxy eyeshadow catalog data from makeup-api for frontend use."""
+    return _list_external_products("eyeshadow", "Eyeshadow", limit)
+
+
+def _list_external_products(product_type: str, category: str, limit: int):
+    url = f"https://makeup-api.herokuapp.com/api/v1/products.json?product_type={product_type}"
     try:
         with urlopen(url, timeout=15) as response:
             payload = json.loads(response.read().decode("utf-8"))
@@ -151,14 +258,14 @@ def list_external_lipsticks(limit: int = Query(default=20, ge=1, le=100)):
             elif raw_image:
                 image_link = raw_image
             else:
-                seed_id = item.get("id") or index
-                image_link = f"https://picsum.photos/seed/lipstick-{seed_id}/960/720"
+                image_link = ""
 
             brand = str(item.get("brand") or "Unknown brand").strip() or "Unknown brand"
             name = str(item.get("name") or f"Lipstick #{index + 1}").strip() or f"Lipstick #{index + 1}"
             price = str(item.get("price") or "n/a").strip() or "n/a"
             price_sign = str(item.get("price_sign") or "$").strip() or "$"
-            product_type = str(item.get("product_type") or "lipstick").strip() or "lipstick"
+            product_type_value = str(item.get("product_type") or product_type).strip() or product_type
+            shade = str(item.get("name") or "").strip() or None
 
             rows.append({
                 **item,
@@ -166,7 +273,9 @@ def list_external_lipsticks(limit: int = Query(default=20, ge=1, le=100)):
                 "name": name,
                 "price": price,
                 "price_sign": price_sign,
-                "product_type": product_type,
+                "product_type": product_type_value,
+                "category": category,
+                "shade": shade,
                 "image_link": image_link,
             })
 
