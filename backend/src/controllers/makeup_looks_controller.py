@@ -164,3 +164,42 @@ async def upload_makeup_look_image(look_id: int = Path(..., gt=0), file: UploadF
     except Exception as exc:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {exc}")
+
+
+@router.delete("/{look_id}")
+def delete_makeup_look(look_id: int = Path(..., gt=0)):
+    db = get_db()
+
+    look = db.execute(
+        "SELECT id, image_url FROM makeup_looks WHERE id = ?",
+        (look_id,),
+    ).fetchone()
+    if look is None:
+        raise HTTPException(status_code=404, detail=f"Makeup look {look_id} not found")
+
+    image_url = look.get("image_url") if isinstance(look, dict) else look[1]
+
+    try:
+        if image_url:
+            upload_row = db.execute(
+                "SELECT id, storage_url FROM uploads WHERE storage_url = ?",
+                (image_url,),
+            ).fetchone()
+            if upload_row is not None:
+                upload_id = upload_row.get("id") if isinstance(upload_row, dict) else upload_row[0]
+                storage_url = upload_row.get("storage_url") if isinstance(upload_row, dict) else upload_row[1]
+
+                db.execute("DELETE FROM uploads WHERE id = ?", (upload_id,))
+
+                if storage_url and str(storage_url).startswith("/data/uploads/"):
+                    file_path = PathlibPath(__file__).resolve().parents[2] / str(storage_url).lstrip("/")
+                    if file_path.exists():
+                        file_path.unlink()
+
+        db.execute("DELETE FROM makeup_looks WHERE id = ?", (look_id,))
+        db.commit()
+
+        return {"message": f"Makeup look {look_id} deleted successfully"}
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Failed to delete makeup look: {exc}")

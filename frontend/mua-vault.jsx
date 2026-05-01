@@ -1,31 +1,31 @@
 const { useState, useEffect, useRef } = React;
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,200;0,300;0,400;0,700;1,300&family=Playfair+Display:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap');
 
 :root {
-  --teal:        #0d9e8f;
-  --teal-deep:   #07655c;
-  --teal-glow:   rgba(13,158,143,0.35);
-  --teal-faint:  rgba(13,158,143,0.12);
-  --pink:        #f472b6;
-  --pink-hot:    #ec4899;
+  --teal:        #8b5cf6;
+  --teal-deep:   #6d28d9;
+  --teal-glow:   rgba(139,92,246,0.18);
+  --teal-faint:  rgba(139,92,246,0.08);
+  --pink:        #9d174d;
+  --pink-hot:    #be185d;
   --pink-pale:   #fce7f3;
-  --pink-glow:   rgba(244,114,182,0.3);
-  --lime:        #a3e635;
-  --lime-bright: #bef264;
-  --lime-glow:   rgba(163,230,53,0.3);
-  --bg:          #060e0d;
-  --bg-2:        #0b1614;
-  --bg-3:        #0f1f1c;
-  --glass:       rgba(13,30,28,0.7);
-  --glass-2:     rgba(7,20,18,0.85);
-  --text:        #e8f5f3;
-  --text-dim:    #7ab5ae;
-  --text-faint:  #3d706a;
-  --border:      rgba(13,158,143,0.2);
-  --border-hot:  rgba(13,158,143,0.5);
-  --scan-color:  rgba(13,158,143,0.04);
+  --pink-glow:   rgba(157,23,77,0.16);
+  --lime:        #1e3a5f;
+  --lime-bright: #bfdbfe;
+  --lime-glow:   rgba(30,58,95,0.14);
+  --bg:          #f4f2f8;
+  --bg-2:        #ffffff;
+  --bg-3:        #ffffff;
+  --glass:       rgba(255,255,255,0.72);
+  --glass-2:     rgba(255,255,255,0.94);
+  --text:        #18101e;
+  --text-dim:    #6b5b8a;
+  --text-faint:  #a090b8;
+  --border:      #e0d8f0;
+  --border-hot:  #c8c0dc;
+  --scan-color:  rgba(139,92,246,0.03);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,11 +35,12 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 300;
   min-height: 100vh;
   overflow-x: hidden;
-  cursor: none;
+  cursor: auto;
+  padding: 1.4rem;
 }
 
 .cursor {
@@ -65,18 +66,7 @@ body {
 }
 
 body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    var(--scan-color) 2px,
-    var(--scan-color) 4px
-  );
-  pointer-events: none;
-  z-index: 9000;
-  animation: scan-shift 8s linear infinite;
+  display: none;
 }
 @keyframes scan-shift {
   0%   { background-position-y: 0; }
@@ -84,12 +74,552 @@ body::before {
 }
 
 body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 8999;
-  opacity: 0.5;
+  display: none;
+}
+
+.layout {
+  display: block;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  width: 100%;
+  height: auto;
+  margin: 0 auto 1.1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 0.75rem;
+}
+
+.sidebar::after {
+  display: none;
+}
+
+.logo-circle,
+.sidebar-avatar,
+.nav-circle {
+  border-color: var(--border);
+  background: var(--bg-2);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.logo-circle {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0;
+}
+
+.logo-letter,
+.nav-circle,
+.sidebar-avatar,
+.topbar-title,
+.section-title,
+.view-title,
+.morgue-look-name,
+.prod-name,
+.client-name,
+.appt-name,
+.card-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+}
+
+.nav-circle {
+  width: 42px;
+  height: 42px;
+}
+
+.nav-tooltip,
+.nav-badge {
+  display: none;
+}
+
+.sidebar-spacer {
+  display: none;
+}
+
+.main {
+  margin-left: 0;
+  min-height: auto;
+}
+
+.topbar {
+  position: static;
+  height: auto;
+  padding: 0.9rem 1rem;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  margin-bottom: 1rem;
+}
+
+.topbar::after {
+  display: none;
+}
+
+.topbar-title {
+  flex: 1 1 220px;
+  letter-spacing: 0.18em;
+  font-size: 1.6rem;
+}
+
+.topbar-title span {
+  color: var(--teal);
+}
+
+.topbar-date {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--text-faint);
+}
+
+.search-input {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+}
+
+.search-input:focus {
+  width: 220px;
+  border-color: var(--teal);
+  box-shadow: none;
+}
+
+.topbar-btn,
+.topbar-login,
+.panel-link,
+.section-action,
+.row-upload-btn,
+.upload-btn,
+.view-close,
+.bubble-btn,
+.bubble-btn-outline,
+.filter-pill,
+.film-submenu-btn {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-dim);
+  box-shadow: none;
+}
+
+.topbar-btn:hover,
+.topbar-login:hover,
+.panel-link:hover,
+.section-action:hover,
+.row-upload-btn:hover,
+.upload-btn:hover,
+.view-close:hover,
+.filter-pill:hover,
+.film-submenu-btn:hover {
+  border-color: var(--teal);
+  color: var(--teal-deep);
+  box-shadow: none;
+}
+
+.topbar-operator {
+  background: var(--bg-2);
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+
+.page {
+  padding: 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.section-tag {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+}
+
+.section-action,
+.panel-link {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.morgue-hero,
+.panel,
+.morgue-card,
+.stat-card,
+.prod-card,
+.client-row,
+.view-content,
+.entity-card,
+.view-item,
+.view-list-item,
+.upload-item {
+  background: var(--glass-2);
+  border: 1px solid var(--border);
+  box-shadow: 0 16px 40px rgba(128, 58, 74, 0.08);
+}
+
+.morgue-hero {
+  padding: 1.1rem;
+  border-radius: 28px;
+}
+
+.morgue-filter-row,
+.morgue-row,
+.actions-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-pill,
+.m-pill,
+.h-pill,
+.status-pill,
+.morgue-tag {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+}
+
+.filter-pill,
+.m-pill {
+  border-radius: 999px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.filter-pill.active,
+.m-pill.sel,
+.m-pill.pink-sel,
+.h-pill.on {
+  background: var(--text);
+  color: #f4f1ff;
+  border-color: var(--text);
+}
+
+.film-submenu,
+.bridal-submenu {
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+}
+
+.morgue-grid {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.75rem;
+}
+
+.morgue-card {
+  border-radius: 18px;
+  overflow: hidden;
+  min-height: 160px;
+}
+
+.morgue-card.featured {
+  grid-row: span 2;
+  min-height: 340px;
+}
+
+.morgue-swatch,
+.row-thumb,
+.view-thumb,
+.prod-cover,
+.library-thumb,
+.drawer-img {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.morgue-swatch {
+  min-height: inherit;
+}
+
+.morgue-overlay {
+  background: linear-gradient(0deg, rgba(24, 16, 30, 0.82) 0%, rgba(24, 16, 30, 0.12) 58%, transparent 100%);
+}
+
+.morgue-look-cat,
+.morgue-tag,
+.morgue-save,
+.stat-label,
+.stat-sub,
+.view-item-meta,
+.view-list-meta,
+.upload-meta,
+.client-meta,
+.appt-type,
+.topbar-date,
+.upload-helper,
+.empty-state-copy {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.morgue-look-name,
+.prod-name,
+.client-name,
+.appt-name,
+.view-item-title,
+.view-list-title,
+.card-title,
+.empty-state-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  color: var(--text);
+}
+
+.morgue-save {
+  opacity: 0.88;
+  background: rgba(255,255,255,0.72);
+  color: var(--text-dim);
+}
+
+.stats-row,
+.prod-grid,
+.view-grid,
+.clients-grid,
+.two-col {
+  gap: 0.75rem;
+}
+
+.stat-card,
+.prod-card,
+.view-item,
+.client-row,
+.view-list-item,
+.upload-item,
+.panel,
+.empty-state {
+  border-radius: 18px;
+}
+
+.stat-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 2.2rem;
+  color: var(--text);
+}
+
+.actions-row {
+  margin-bottom: 0;
+}
+
+.action-circle,
+.sidebar-avatar,
+.logo-circle,
+.topbar-btn,
+.view-close {
+  border-radius: 50%;
+}
+
+.action-circle {
+  width: 54px;
+  height: 54px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.action-lbl {
+  color: var(--text-faint);
+  letter-spacing: 0.2em;
+}
+
+.panel-head {
+  padding: 0.9rem 1rem;
+  background: rgba(255,255,255,0.45);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-label {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 1rem;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+}
+
+.appt-row,
+.client-row,
+.view-list-item,
+.upload-item {
+  background: rgba(255,255,255,0.72);
+  border-bottom: 1px solid rgba(224,216,240,0.7);
+}
+
+.row-thumb,
+.view-thumb,
+.prod-cover {
+  border: 1px solid var(--border);
+  background-color: #ede9fe;
+}
+
+.row-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+}
+
+.view-thumb {
+  height: 120px;
+  border-radius: 14px;
+}
+
+.prod-cover {
+  border-radius: 14px;
+}
+
+.view-modal {
+  background: rgba(24, 16, 30, 0.48);
+  backdrop-filter: blur(8px);
+}
+
+.view-content {
+  max-width: 920px;
+  padding: 24px;
+  border-radius: 24px;
+  background: var(--glass-2);
+}
+
+.view-header {
+  border-bottom-color: var(--border);
+}
+
+.view-title {
+  font-size: 1.6rem;
+}
+
+.view-list {
+  gap: 0.75rem;
+}
+
+.upload-btn,
+.row-upload-btn {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.55rem 0.9rem;
+}
+
+.upload-actions {
+  gap: 0.65rem;
+}
+
+.upload-helper,
+.status-pill,
+.upload-meta,
+.client-tone-tag,
+.view-item-meta,
+.view-list-meta,
+.stat-sub,
+.appt-period,
+.appt-type,
+.topbar-date,
+.morgue-look-cat,
+.morgue-tag {
+  font-size: 0.62rem;
+  color: var(--text-faint);
+}
+
+.status-pill.s-upcoming,
+.status-pill.s-booked,
+.status-pill.s-completed,
+.status-pill.s-cancelled {
+  background: var(--bg-2);
+}
+
+body::before,
+body::after,
+.cursor,
+.cursor-ring {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    display: block;
+  }
+
+  .sidebar {
+    border-radius: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .topbar {
+    justify-content: center;
+  }
+
+  .morgue-grid,
+  .stats-row,
+  .prod-grid,
+  .clients-grid,
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .morgue-card.featured {
+    grid-row: span 1;
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 0.72rem;
+  }
+
+  .sidebar,
+  .topbar,
+  .morgue-hero,
+  .panel,
+  .view-content {
+    border-radius: 20px;
+    padding: 1rem;
+  }
+
+  .topbar-title {
+    font-size: 1.35rem;
+  }
+
+  .view-grid,
+  .morgue-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .view-thumb,
+  .row-thumb,
+  .prod-cover {
+    height: 140px;
+  }
 }
 
 .layout {
@@ -347,6 +877,26 @@ body::after {
   border-color: var(--pink);
   color: var(--pink);
   box-shadow: 0 0 12px var(--pink-glow);
+}
+
+.topbar-tab {
+  margin-left: auto;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-dim);
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.topbar-tab:hover {
+  border-color: var(--teal);
+  color: var(--teal-deep);
+  box-shadow: 0 0 10px var(--teal-glow);
 }
 
 .topbar-operator {
@@ -703,6 +1253,19 @@ body::after {
   box-shadow: 0 0 10px var(--teal-glow);
 }
 
+.delete-action.row-upload-btn,
+.delete-action.row-upload-btn:hover {
+  color: #b42318;
+  background: rgba(180, 35, 24, 0.08);
+  border-color: rgba(180, 35, 24, 0.28);
+}
+
+.delete-action.row-upload-btn:hover {
+  background: rgba(180, 35, 24, 0.14);
+  border-color: rgba(180, 35, 24, 0.45);
+  box-shadow: 0 0 10px rgba(180, 35, 24, 0.14);
+}
+
 .morgue-hero {
   margin-bottom: 36px;
 }
@@ -772,6 +1335,7 @@ body::after {
 
 .morgue-card {
   position: relative;
+  display: block;
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
@@ -797,6 +1361,18 @@ body::after {
   justify-content: center;
   position: relative;
   overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #ede9fe;
+}
+
+.morgue-image {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  object-fit: cover;
+  display: block;
 }
 
 .swatch-1 { background: linear-gradient(135deg, #1a0a2e 0%, #0d9e8f 40%, #f472b6 100%); }
@@ -820,6 +1396,7 @@ body::after {
   justify-content: flex-end;
   padding: 16px;
   transition: background 0.3s;
+  z-index: 2;
 }
 .morgue-card:hover .morgue-overlay {
   background: linear-gradient(0deg, rgba(6,14,13,0.95) 0%, rgba(6,14,13,0.4) 60%, transparent 100%);
@@ -984,6 +1561,19 @@ body::after {
   transition: color 0.2s;
 }
 .panel-link:hover { color: var(--lime); }
+
+.delete-action {
+  color: #b42318;
+  background: rgba(180, 35, 24, 0.08);
+  border-color: rgba(180, 35, 24, 0.28);
+}
+
+.delete-action:hover {
+  color: #7a160f;
+  background: rgba(180, 35, 24, 0.14);
+  border-color: rgba(180, 35, 24, 0.45);
+  box-shadow: 0 0 10px rgba(180, 35, 24, 0.14);
+}
 
 .appt-row {
   display: flex;
@@ -3302,6 +3892,10 @@ function MuaVault() {
     setCurrentView("all-clients");
   }
 
+  function handleClientsPage() {
+    setCurrentView("all-clients");
+  }
+
   function handleClientProfile(clientId) {
     setSelectedClientId(clientId);
     loadClientProfile(clientId);
@@ -3338,6 +3932,72 @@ function MuaVault() {
       refreshData();
     } catch (err) {
       alert(`Could not delete client: ${err.message}`);
+    }
+  }
+
+  async function deleteLook(lookId, lookName = "this look") {
+    const confirmed = window.confirm(`Delete ${lookName}? This will remove the look from the morgue.`);
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/makeup-looks/${lookId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        let message = `Delete failed (${response.status})`;
+        try {
+          const err = await response.json();
+          message = err?.detail || message;
+        } catch {
+          // no-op
+        }
+        throw new Error(message);
+      }
+
+      addHistoryEntry("Deleted look", { look_id: lookId, look_name: lookName });
+      setApiStatus(`Deleted ${lookName}`);
+      if (selectedDetail?.type === "Look" && selectedDetail?.item?.id === lookId) {
+        setSelectedDetail(null);
+      }
+      refreshData();
+    } catch (err) {
+      alert(`Could not delete look: ${err.message}`);
+    }
+  }
+
+  async function deleteProduction(productionId, productionName = "this production") {
+    const confirmed = window.confirm(`Delete ${productionName}? This will remove the production from the vault.`);
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/productions/${productionId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        let message = `Delete failed (${response.status})`;
+        try {
+          const err = await response.json();
+          message = err?.detail || message;
+        } catch {
+          // no-op
+        }
+        throw new Error(message);
+      }
+
+      addHistoryEntry("Deleted production", { production_id: productionId, production_name: productionName });
+      setApiStatus(`Deleted ${productionName}`);
+      if (selectedDetail?.type === "Production" && selectedDetail?.item?.id === productionId) {
+        setSelectedDetail(null);
+      }
+      refreshData();
+    } catch (err) {
+      alert(`Could not delete production: ${err.message}`);
     }
   }
 
@@ -3460,6 +4120,28 @@ function MuaVault() {
                 alt={`${selectedDetail.type} preview`}
                 style={{ width: "100%", maxHeight: "52vh", objectFit: "contain", borderRadius: 10, border: "1px solid var(--border)", marginBottom: 12 }}
               />
+            ) : null}
+            {selectedDetail.type === "Look" ? (
+              <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+                <button
+                  className="panel-link delete-action"
+                  type="button"
+                  onClick={() => deleteLook(selectedDetail.item?.id, selectedDetail.item?.name || "this look")}
+                >
+                  Delete Look -&gt;
+                </button>
+              </div>
+            ) : null}
+            {selectedDetail.type === "Production" ? (
+              <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+                <button
+                  className="panel-link delete-action"
+                  type="button"
+                  onClick={() => deleteProduction(selectedDetail.item?.id, selectedDetail.item?.name || selectedDetail.item?.production_name || "this production")}
+                >
+                  Delete Production -&gt;
+                </button>
+              </div>
             ) : null}
             <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontSize: 11, lineHeight: 1.5, color: "var(--text)", background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 8, padding: 14 }}>
               {JSON.stringify(selectedDetail.item, null, 2)}
@@ -3803,6 +4485,9 @@ function MuaVault() {
                     <div className="view-list-meta">{p.meta}</div>
                   </div>
                   <span className="view-list-status">{p.status || (p.live ? "LIVE" : "PLANNED")}</span>
+                  <button type="button" className="row-upload-btn delete-action" onClick={(event) => { event.stopPropagation(); deleteProduction(p.id, p.name); }}>
+                    Delete
+                  </button>
                 </div>
               ))}
             </div>
@@ -3953,7 +4638,7 @@ function MuaVault() {
                       <div className="view-list-title">{c.full_name}</div>
                       <div className="view-list-meta">{c.email || c.phone || 'No contact'} · {c.skin_tone || 'N/A'}</div>
                     </div>
-                    <button type="button" className="row-upload-btn" onClick={(e) => { e.stopPropagation(); deleteClient(c.id, c.full_name); }}>
+                    <button type="button" className="row-upload-btn delete-action" onClick={(e) => { e.stopPropagation(); deleteClient(c.id, c.full_name); }}>
                       Delete
                     </button>
                     <button type="button" className="row-upload-btn" onClick={(e) => { e.stopPropagation(); handleClientProfile(c.id); }}>
@@ -3973,7 +4658,7 @@ function MuaVault() {
                       <div className="view-list-title">{c.name}</div>
                       <div className="view-list-meta">{c.meta} · {c.tone}</div>
                     </div>
-                    <button type="button" className="row-upload-btn" onClick={(e) => { e.stopPropagation(); deleteClient(c.id, c.name); }}>
+                    <button type="button" className="row-upload-btn delete-action" onClick={(e) => { e.stopPropagation(); deleteClient(c.id, c.name); }}>
                       Delete
                     </button>
                     <button type="button" className="row-upload-btn" onClick={(e) => { e.stopPropagation(); handleClientProfile(c.id); }}>
@@ -4055,7 +4740,7 @@ function MuaVault() {
               <button className="login-button" onClick={() => setCurrentView("all-clients")} style={{ marginTop: "16px", width: "100%" }}>
                 Back to Roster
               </button>
-              <button className="login-button secondary" onClick={() => deleteClient(selectedClientData.id, selectedClientData.full_name)} style={{ marginTop: "10px", width: "100%" }}>
+              <button className="login-button secondary delete-action" onClick={() => deleteClient(selectedClientData.id, selectedClientData.full_name)} style={{ marginTop: "10px", width: "100%" }}>
                 Delete Client
               </button>
             </div>
@@ -4168,7 +4853,7 @@ function MuaVault() {
             <button className="login-button" type="submit">Create Production</button>
           </form>
           {renderEntityTypeLibrary("productions", "Productions Library")}
-          <div className="view-list" style={{ marginTop: 16 }}>{productionsData.slice(0, 12).map((p) => (<div key={p.id} className="view-list-item"><div className="row-thumb" style={{ backgroundImage: `url(${productionCoverUrl(p)})` }} onClick={(event) => { event.stopPropagation(); openImagePreview(productionCoverUrl(p), p.production_name || "Production image"); }} /><div className="view-list-left"><div className="view-list-title">{p.production_name}</div><div className="view-list-meta">{p.production_type} · {p.start_date || "No start date"}</div></div><button className="row-upload-btn" type="button" onClick={() => openSectionImagePicker({ entityType: "productions", entityId: p.id, fieldName: "cover_image", label: p.production_name })}>Upload</button></div>))}</div>
+          <div className="view-list" style={{ marginTop: 16 }}>{productionsData.slice(0, 12).map((p) => (<div key={p.id} className="view-list-item"><div className="row-thumb" style={{ backgroundImage: `url(${productionCoverUrl(p)})` }} onClick={(event) => { event.stopPropagation(); openImagePreview(productionCoverUrl(p), p.production_name || "Production image"); }} /><div className="view-list-left"><div className="view-list-title">{p.production_name}</div><div className="view-list-meta">{p.production_type} · {p.start_date || "No start date"}</div></div><button className="row-upload-btn" type="button" onClick={() => openSectionImagePicker({ entityType: "productions", entityId: p.id, fieldName: "cover_image", label: p.production_name })}>Upload</button><button className="row-upload-btn delete-action" type="button" onClick={() => deleteProduction(p.id, p.production_name || "this production")}>Delete</button></div>))}</div>
         </div></div>
       )}
 
@@ -4500,30 +5185,12 @@ function MuaVault() {
 
       {currentView !== "login" && (
       <div className="layout">
-        <aside className="sidebar">
-          <div className="logo-circle">
-            <span className="logo-letter">MV</span>
-          </div>
-
-          {navItems.map(({ icon, label, badge, active }) => (
-            <div key={label} className={`nav-circle ${active ? "active" : ""}`}>
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-              </svg>
-              {badge && <span className="nav-badge">{badge}</span>}
-              <span className="nav-tooltip">{label}</span>
-            </div>
-          ))}
-
-          <div className="sidebar-spacer" />
-          <div className="sidebar-avatar">A</div>
-        </aside>
-
         <main className="main">
           <header className="topbar">
             <h1 className="topbar-title">
               <span className="glitch" data-text="MUA">MUA</span> VAULT
             </h1>
+            <button className="topbar-tab" type="button" onClick={handleClientsPage}>Clients</button>
             <span className="topbar-date">Wed · 22 Apr 2026</span>
             <div className="search-wrap">
               <svg className="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -4655,16 +5322,21 @@ function MuaVault() {
                     key={i}
                     className={`morgue-card ${lk.featured ? "featured" : ""}`}
                   >
-                    <div
-                      className="morgue-swatch"
-                      style={{ backgroundImage: `url(${resolveLookPreviewImage(lk)})`, backgroundSize: "cover", backgroundPosition: "center" }}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        openImagePreview(resolveLookPreviewImage(lk), lk.name || "Look preview");
-                      }}
-                    >
-                      {!lk.imageUrl && <div className="swatch-pattern" style={{ opacity: 0 }} />}
-                    </div>
+                    {(() => {
+                      const lookPreviewUrl = resolveLookPreviewImage(lk) || noImagePlaceholder();
+                      return (
+                        <div
+                          className="morgue-swatch"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            openImagePreview(lookPreviewUrl, lk.name || "Look preview");
+                          }}
+                        >
+                          <img className="morgue-image" src={lookPreviewUrl} alt={lk.name || "Look preview"} />
+                          {!resolveLookPreviewImage(lk) && <div className="swatch-pattern" />}
+                        </div>
+                      );
+                    })()}
                     <div className="morgue-save" onClick={(event) => { event.stopPropagation(); openLookImagePicker(lk.id); }} title="Upload look photo">
                       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -4685,6 +5357,9 @@ function MuaVault() {
                       </button>
                       <button className="panel-link" style={{ marginTop: 8 }} onClick={(event) => { event.stopPropagation(); openLookImagePicker(lk.id); }}>
                         Upload Picture -&gt;
+                      </button>
+                      <button className="panel-link delete-action" style={{ marginTop: 8 }} onClick={(event) => { event.stopPropagation(); deleteLook(lk.id, lk.name); }}>
+                        Delete Look -&gt;
                       </button>
                       <button className="panel-link" style={{ marginTop: 8 }} onClick={(event) => { event.stopPropagation(); openDetail("Look", lk); }}>
                         Open Details -&gt;
@@ -4859,11 +5534,11 @@ function MuaVault() {
 
               <div className="panel">
                 <div className="panel-head">
-                  <span className="panel-label">Client Roster</span>
-                  <button className="panel-link" onClick={handleAllClients}>All Clients -&gt;</button>
+                  <span className="panel-label">Client Hub</span>
+                  <button className="panel-link" onClick={handleClientsPage}>Open Roster -&gt;</button>
                 </div>
-                <div className="clients-grid">
-                  {clients.slice(0, 6).map((c, i) => (
+                <div className="view-list" style={{ padding: 12 }}>
+                  {clients.slice(0, 3).map((c, i) => (
                     <div key={c.id || i} className="client-row">
                       <div className="client-av">{c.i}</div>
                       <div>
@@ -4871,19 +5546,6 @@ function MuaVault() {
                         <div className="client-meta">{c.meta}</div>
                       </div>
                       <span className="client-tone-tag">{c.tone}</span>
-                      <button
-                        type="button"
-                        className="row-upload-btn"
-                        onClick={() => openSectionImagePicker({
-                          entityType: "clients",
-                          entityId: c.id,
-                          fieldName: "photo_url",
-                          label: c.name,
-                          notes: `Client photo for ${c.name}`,
-                        })}
-                      >
-                        Upload Picture
-                      </button>
                     </div>
                   ))}
                 </div>

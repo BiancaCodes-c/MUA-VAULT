@@ -1,4 +1,5 @@
 from typing import Optional
+from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
@@ -111,3 +112,61 @@ def create_production(req: CreateProductionRequest):
     except Exception as exc:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Failed to create production: {exc}")
+
+
+@router.delete("/{production_id}")
+def delete_production(production_id: int):
+    db = get_db()
+
+    production = db.execute(
+        "SELECT id FROM productions WHERE id = ?",
+        (production_id,),
+    ).fetchone()
+    if production is None:
+        raise HTTPException(status_code=404, detail=f"Production {production_id} not found")
+
+    linked_upload_rows = db.execute(
+        """
+        SELECT ul.upload_id, u.storage_url
+        FROM upload_links ul
+        JOIN uploads u ON u.id = ul.upload_id
+        WHERE ul.entity_type = 'productions' AND ul.entity_id = ?
+        """,
+        (production_id,),
+    ).fetchall()
+
+    upload_ids = []
+    storage_urls = []
+    for row in linked_upload_rows:
+        upload_id = row.get("upload_id") if isinstance(row, dict) else row[0]
+        storage_url = row.get("storage_url") if isinstance(row, dict) else row[1]
+        if upload_id is not None:
+            upload_ids.append(upload_id)
+        if storage_url:
+            storage_urls.append(storage_url)
+
+    try:
+        db.execute(
+            "DELETE FROM upload_links WHERE entity_type = 'productions' AND entity_id = ?",
+            (production_id,),
+        )
+        db.execute("DELETE FROM productions WHERE id = ?", (production_id,))
+
+        for upload_id, storage_url in zip(upload_ids, storage_urls):
+            remaining = db.execute(
+                "SELECT COUNT(*) AS count FROM upload_links WHERE upload_id = ?",
+                (upload_id,),
+            ).fetchone()
+            remaining_count = remaining.get("count") if isinstance(remaining, dict) else remaining[0]
+            if remaining_count == 0:
+                db.execute("DELETE FROM uploads WHERE id = ?", (upload_id,))
+                if storage_url and str(storage_url).startswith("/data/uploads/"):
+                    file_path = Path(__file__).resolve().parents[2] / str(storage_url).lstrip("/")
+                    if file_path.exists():
+                        file_path.unlink()
+
+        db.commit()
+        return {"message": f"Production {production_id} deleted successfully"}
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Failed to delete production: {exc}")
