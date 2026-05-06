@@ -20,6 +20,7 @@ from src.routes.productions_routes import productions_router
 from src.routes.effects_makeup_routes import effects_makeup_router
 from src.routes.call_sheets_routes import call_sheets_router
 from src.routes.users_routes import router as users_router
+from src.routes.exports_routes import router as exports_router
 
 
 api_router = APIRouter()
@@ -43,3 +44,4 @@ api_router.include_router(appointments_router, prefix="/appointments", tags=["ap
 api_router.include_router(industry_router, prefix="/industry", tags=["industry"])
 api_router.include_router(uploads_router, prefix="/uploads", tags=["uploads"])
 api_router.include_router(looks_morgue_router, prefix="/looks-morgue", tags=["looks-morgue"])
+api_router.include_router(exports_router, prefix="/exports", tags=["exports"])

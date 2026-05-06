@@ -2161,6 +2161,26 @@ body::after,
   border-color: var(--teal);
   background: var(--bg-2);
   box-shadow: 0 0 12px var(--teal-glow);
+  transform: translateY(-3px);
+}
+
+.timeline-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 10px;
+  color: var(--text-dim);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.timeline-divider::before,
+.timeline-divider::after {
+  content: "";
+  height: 1px;
+  background: var(--border);
+  flex: 1;
 }
 
 .view-thumb {
@@ -2659,6 +2679,7 @@ function MuaVault() {
   // Client Profile & Scheduling Features
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [selectedClientData, setSelectedClientData] = useState(null);
+  const [focusedAppointment, setFocusedAppointment] = useState(null);
   const [clientLog, setClientLog] = useState(() => {
     try {
       const raw = window.localStorage.getItem("muaVaultClientLog");
@@ -2669,6 +2690,9 @@ function MuaVault() {
   });
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [calendarAppointments, setCalendarAppointments] = useState({});
+  const [exportFiles, setExportFiles] = useState([]);
+  const [dataUpdateFilter, setDataUpdateFilter] = useState("all");
+  const [dataUpdateSearch, setDataUpdateSearch] = useState("");
   
   // Entity images - keyed by "entityType-entityId"
   const [entityImages, setEntityImages] = useState({});
@@ -3127,6 +3151,16 @@ function MuaVault() {
         setCallSheetsData(callSheetRows);
         setCharactersData(characterRows);
         setShootDaysData(shootDayRows);
+          // load export files list
+          try {
+            const exRes = await fetch(`${API_BASE}/exports/`);
+            if (exRes.ok) {
+              const exJson = await exRes.json();
+              setExportFiles(Array.isArray(exJson.data) ? exJson.data : []);
+            }
+          } catch {
+            setExportFiles([]);
+          }
 
         setApiStatus("Connected");
       } catch {
@@ -3888,6 +3922,10 @@ function MuaVault() {
     setCurrentView("full-calendar");
   }
 
+  function handleDataUpdates() {
+    setCurrentView("data-updates");
+  }
+
   function handleAllClients() {
     setCurrentView("all-clients");
   }
@@ -3896,8 +3934,9 @@ function MuaVault() {
     setCurrentView("all-clients");
   }
 
-  function handleClientProfile(clientId) {
+  function handleClientProfile(clientId, appointment = null) {
     setSelectedClientId(clientId);
+    setFocusedAppointment(appointment);
     loadClientProfile(clientId);
     setCurrentView("client-profile");
   }
@@ -4082,6 +4121,59 @@ function MuaVault() {
     const at = new Date(entry.at);
     const timestamp = Number.isNaN(at.getTime()) ? entry.at : at.toLocaleString();
     return `${entry.action} · ${timestamp}`;
+  }
+
+  function updateCategory(entry) {
+    const action = String(entry?.action || "").toLowerCase();
+    if (action.includes("export") || action.includes("parquet") || action.includes("quality")) return "export";
+    if (action.includes("appointment")) return "appointment";
+    if (action.includes("client")) return "client";
+    if (action.includes("login") || action.includes("logout")) return "system";
+    if (action.includes("upload") || action.includes("image")) return "media";
+    return "vault";
+  }
+
+  function updateIcon(kind) {
+    switch (kind) {
+      case "export":
+        return "⬇︎";
+      case "appointment":
+        return "⌁";
+      case "client":
+        return "◉";
+      case "system":
+        return "✦";
+      case "media":
+        return "▣";
+      default:
+        return "✳";
+    }
+  }
+
+  function updateTint(kind) {
+    switch (kind) {
+      case "export":
+        return "var(--teal)";
+      case "appointment":
+        return "var(--lime-bright)";
+      case "client":
+        return "var(--pink)";
+      case "system":
+        return "var(--yellow, #f5c542)";
+      case "media":
+        return "var(--orange, #d88f52)";
+      default:
+        return "var(--text)";
+    }
+  }
+
+  function updateDateKey(entry) {
+    const raw = entry?.at || entry?.timestamp || new Date().toISOString();
+    const date = new Date(raw);
+    if (Number.isNaN(date.getTime())) {
+      return "Unknown date";
+    }
+    return date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" });
   }
 
   return (
@@ -4557,7 +4649,7 @@ function MuaVault() {
                           <>
                             <div style={{ color: "var(--teal)" }}>{appts.length} appt{appts.length > 1 ? 's' : ''}</div>
                             {appts.slice(0, 2).map((a, idx) => (
-                              <div key={idx} onClick={() => openDetail("Appointment", a)} style={{ color: "var(--lime-bright)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              <div key={idx} onClick={(e) => { e.stopPropagation(); handleClientProfile(a.client_id || a.client?.id, a); }} style={{ color: "var(--lime-bright)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", cursor: "pointer" }}>
                                 {a.client_name?.split(' ')[0] || `#${a.id}`}
                               </div>
                             ))}
@@ -4576,7 +4668,7 @@ function MuaVault() {
                 </h3>
                 <div className="view-list">
                   {appointmentsData.slice(0, 10).map((a) => (
-                    <div key={a.id} className="view-list-item" onClick={() => openDetail("Appointment", a)}>
+                    <div key={a.id} className="view-list-item" onClick={(e) => { e.stopPropagation(); handleClientProfile(a.client_id || a.client?.id, a); }}>
                       <div className="view-list-left">
                         <div className="view-list-title">{a.client_name || `Client ${a.client_id}`}</div>
                         <div className="view-list-meta">{a.appointment_date} · {a.start_time} · {a.event_type}</div>
@@ -4672,6 +4764,127 @@ function MuaVault() {
         </div>
       )}
 
+      {currentView !== "login" && currentView === "data-updates" && (
+        <div className="view-modal">
+          <div className="view-content">
+            <div className="view-header">
+              <h2 className="view-title">Data Updates</h2>
+              <button className="view-close" onClick={() => setCurrentView("dashboard")}>✕</button>
+            </div>
+            <div style={{ padding: "16px" }}>
+              <div className="section-head" style={{ marginBottom: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3 className="view-title" style={{ fontSize: 16 }}>Recent Vault Updates</h3>
+                <div style={{ fontSize: 12, color: "var(--text-dim)" }}>{historyEntries.length} record(s)</div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 10, marginBottom: 14 }}>
+                <div className="view-item" style={{ background: "linear-gradient(180deg, rgba(92,210,196,0.16), rgba(92,210,196,0.05))" }}>
+                  <div className="view-item-meta">Total Updates</div>
+                  <div className="view-item-title">{historyEntries.length}</div>
+                </div>
+                <div className="view-item" style={{ background: "linear-gradient(180deg, rgba(173,108,255,0.16), rgba(173,108,255,0.05))" }}>
+                  <div className="view-item-meta">Exports</div>
+                  <div className="view-item-title">{historyEntries.filter((item) => updateCategory(item) === "export").length}</div>
+                </div>
+                <div className="view-item" style={{ background: "linear-gradient(180deg, rgba(255,110,183,0.16), rgba(255,110,183,0.05))" }}>
+                  <div className="view-item-meta">Appointments</div>
+                  <div className="view-item-title">{historyEntries.filter((item) => updateCategory(item) === "appointment").length}</div>
+                </div>
+                <div className="view-item" style={{ background: "linear-gradient(180deg, rgba(255,198,80,0.16), rgba(255,198,80,0.05))" }}>
+                  <div className="view-item-meta">Clients</div>
+                  <div className="view-item-title">{historyEntries.filter((item) => updateCategory(item) === "client").length}</div>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+                {["all", "export", "appointment", "client", "system", "media"].map((kind) => (
+                  <button
+                    key={kind}
+                    type="button"
+                    className="login-button secondary"
+                    onClick={() => setDataUpdateFilter(kind)}
+                    style={{ opacity: dataUpdateFilter === kind ? 1 : 0.6, padding: "8px 12px" }}
+                  >
+                    {kind === "all" ? "All" : kind.charAt(0).toUpperCase() + kind.slice(1)}
+                  </button>
+                ))}
+                <input
+                  className="search-input"
+                  placeholder="Search updates..."
+                  value={dataUpdateSearch}
+                  onChange={(e) => setDataUpdateSearch(e.target.value)}
+                  style={{ minWidth: 220, flex: 1 }}
+                />
+              </div>
+
+              {/* Export Files */}
+              <div style={{ marginBottom: 12, padding: 12, border: "1px solid var(--border)", borderRadius: 14, background: "var(--bg-3)" }}>
+                <h4 style={{ margin: 0, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-dim)" }}>Latest Exports</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginTop: 10 }}>
+                  {exportFiles.length ? exportFiles.slice(0, 6).map((f) => (
+                    <div key={f.name} className="view-item" style={{ width: "100%", minHeight: 126, borderTop: "3px solid var(--teal)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                        <div>
+                          <div className="view-item-title">{f.name}</div>
+                          <div className="view-item-meta">{new Date((f.modified || 0) * 1000).toLocaleString()}</div>
+                        </div>
+                        <span className="view-list-status" style={{ background: "rgba(92,210,196,0.12)", color: "var(--teal)" }}>{(f.size / 1024).toFixed(1)} KB</span>
+                      </div>
+                      <a className="panel-link" href={f.url} target="_blank" rel="noreferrer" style={{ marginTop: 10, display: "inline-flex" }}>Download →</a>
+                    </div>
+                  )) : (
+                    <div style={{ fontSize: 12, color: "var(--text-dim)" }}>No exports yet</div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                {(() => {
+                  const filtered = historyEntries
+                    .filter((entry) => dataUpdateFilter === "all" || updateCategory(entry) === dataUpdateFilter)
+                    .filter((entry) => {
+                      const haystack = `${entry.action || ""} ${JSON.stringify(entry.payload || {})}`.toLowerCase();
+                      return haystack.includes(dataUpdateSearch.toLowerCase());
+                    })
+                    .slice(0, 12);
+
+                  const grouped = filtered.reduce((acc, entry) => {
+                    const key = updateDateKey(entry);
+                    if (!acc[key]) acc[key] = [];
+                    acc[key].push(entry);
+                    return acc;
+                  }, {});
+
+                  return Object.entries(grouped).map(([dateLabel, entries]) => (
+                    <div key={dateLabel} style={{ marginBottom: 18 }}>
+                      <div className="timeline-divider">{dateLabel}</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+                        {entries.map((h) => {
+                          const kind = updateCategory(h);
+                          return (
+                            <div key={h.id} className="view-item" style={{ cursor: "pointer", position: "relative", borderTop: `3px solid ${updateTint(kind)}`, minHeight: 150, background: "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0))" }} onClick={() => { setCurrentView("history-tracker"); }}>
+                              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10, gap: 12 }}>
+                                <div style={{ width: 34, height: 34, borderRadius: 10, display: "grid", placeItems: "center", background: "var(--bg-3)", color: updateTint(kind), fontSize: 18, border: `1px solid ${updateTint(kind)}33` }}>
+                                  {updateIcon(kind)}
+                                </div>
+                                <span className="view-list-status" style={{ background: `${updateTint(kind)}22`, color: updateTint(kind) }}>{kind}</span>
+                              </div>
+                              <div className="view-item-title">{h.action}</div>
+                              <div className="view-item-meta">{new Date(h.at || h.timestamp || Date.now()).toLocaleString()}</div>
+                              <div style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 8, maxHeight: 60, overflow: "hidden", textOverflow: "ellipsis" }}>{JSON.stringify(h.payload || {})}</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ));
+                })()}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {currentView !== "login" && currentView === "client-profile" && selectedClientData && (
         <div className="view-modal">
           <div className="view-content">
@@ -4714,6 +4927,27 @@ function MuaVault() {
                 <div style={{ background: "var(--bg-3)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)", marginBottom: "24px" }}>
                   <div style={{ fontSize: "9px", color: "var(--text-faint)", textTransform: "uppercase", marginBottom: "8px" }}>Notes</div>
                   <div style={{ fontSize: "12px", color: "var(--text)", lineHeight: "1.4" }}>{selectedClientData.notes}</div>
+                </div>
+              )}
+
+              {/* Focused Appointment (from calendar click) */}
+              {focusedAppointment && (
+                <div style={{ marginBottom: 16, padding: 14, background: "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))", border: "1px solid var(--border)", borderRadius: 10 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div>
+                      <div style={{ fontSize: 12, color: "var(--text-faint)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Upcoming Appointment</div>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text)", marginTop: 6 }}>{new Date(focusedAppointment.appointment_date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })} · {focusedAppointment.start_time || ''}</div>
+                      <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 4 }}>{focusedAppointment.event_type || 'Service'} · {focusedAppointment.location || 'Location TBD'}</div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "var(--teal)" }}>{focusedAppointment.status || 'Booked'}</div>
+                      {focusedAppointment.price ? <div style={{ fontSize: 14, color: "var(--text)" }}>{formatMoney(focusedAppointment.price)}</div> : null}
+                      <button className="panel-link" style={{ marginTop: 8 }} onClick={() => { setFocusedAppointment(null); }}>Close</button>
+                    </div>
+                  </div>
+                  {focusedAppointment.notes && (
+                    <div style={{ fontSize: 12, color: "var(--text)", background: "var(--bg-3)", padding: 10, borderRadius: 8 }}>{focusedAppointment.notes}</div>
+                  )}
                 </div>
               )}
 
@@ -5191,6 +5425,7 @@ function MuaVault() {
               <span className="glitch" data-text="MUA">MUA</span> VAULT
             </h1>
             <button className="topbar-tab" type="button" onClick={handleClientsPage}>Clients</button>
+            <button className="topbar-tab" type="button" onClick={() => setCurrentView("data-updates")}>Updates</button>
             <span className="topbar-date">Wed · 22 Apr 2026</span>
             <div className="search-wrap">
               <svg className="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

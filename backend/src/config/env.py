@@ -27,6 +27,7 @@ class Env:
     db_path: str
     schema_path: str
     seed_path: str
+    db_url: str | None
     db_path_absolute: str
     schema_path_absolute: str
     seed_path_absolute: str
@@ -42,6 +43,7 @@ def load_env() -> Env:
     db_path = os.getenv("DB_PATH", "./data/mua-vault.db")
     schema_path = os.getenv("SCHEMA_PATH", "../SCHEMA")
     seed_path = os.getenv("SEED_PATH", "../SEED.sql")
+    db_url = os.getenv("DATABASE_URL")
 
     cwd = Path.cwd()
     return Env(
@@ -50,6 +52,7 @@ def load_env() -> Env:
         db_path=db_path,
         schema_path=schema_path,
         seed_path=seed_path,
+        db_url=db_url,
         db_path_absolute=str((cwd / db_path).resolve()),
         schema_path_absolute=str((cwd / schema_path).resolve()),
         seed_path_absolute=str((cwd / seed_path).resolve()),
